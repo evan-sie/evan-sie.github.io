@@ -1,0 +1,12 @@
+export { default as Hero } from "./Hero";
+export { default as About } from "./About";
+export { default as FlyingQuote } from "./FlyingQuote";
+export { default as EngineeringHub } from "./EngineeringHub";
+export { default as Contact } from "./Contact";
+export { default as GridBackground } from "./GridBackground";
+export { default as BackgroundCanvas } from "./BackgroundCanvas";
+export { default as FloatingDock } from "./FloatingDock";
+export { default as SmoothScrollProvider } from "./SmoothScrollProvider";
+export { default as LensCursor } from "./LensCursor";
+export { default as AeroWireframe } from "./AeroWireframe";
+export { default as ResumeModal } from "./ResumeModal";
