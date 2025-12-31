@@ -79,7 +79,7 @@ export default function Contact() {
           variants={itemVariants}
           style={{ y: headerY }}
         >
-          04 — Contact
+          
         </motion.p>
 
         {/* Heading */}

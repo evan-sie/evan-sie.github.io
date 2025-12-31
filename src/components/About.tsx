@@ -219,7 +219,7 @@ export default function About() {
               {/* Photo container - FORCED to 280px max width */}
               <div className="relative w-full max-w-[280px]">
                 {/* Traffic Light Window Header */}
-                <div className="flex items-center justify-between px-4 py-3 border border-white/10 border-b-0 rounded-t-lg bg-[#1a1a1a]">
+                <div className="flex items-center justify-between px-4 py-3 border border-white/10 border-b-0 rounded-t-lg bg-deep-black">
                   <TrafficLights />
                   <span className="text-[10px] font-mono tracking-wider text-engineering-white/50 uppercase">
                     pfp.jpg

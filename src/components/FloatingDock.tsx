@@ -191,7 +191,7 @@ export default function FloatingDock() {
   // Dimensions based on state
   const collapsedSize = 24;
   const expandedWidth = isMobile ? 260 : 320;
-  const expandedHeight = isMobile ? 52 : 72;
+  const expandedHeight = isMobile ? 62 : 52;
 
   return (
     <motion.div

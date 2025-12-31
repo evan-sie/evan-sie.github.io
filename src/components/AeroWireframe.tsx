@@ -90,15 +90,25 @@ const ANIMATION = {
 // ║  Interpolate between these states based on scroll position                   ║
 // ╚══════════════════════════════════════════════════════════════════════════════╝
 
-const CAMERA_KEYFRAMES = [
+// Desktop camera keyframes
+const CAMERA_KEYFRAMES_DESKTOP = [
   { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 1, -2],    label: "Hero" },
   { scroll: 0.23, pos: [-4, 4, -8],    target: [1, 1.5, -4],    label: "About" },
   { scroll: 0.28, pos: [-4, 4, -8],    target: [1, 1.5, -4],  label: "About" },
-  // { scroll: 0.4, pos: [-3, 3, 6],     target: [1.4, 0, -3],   label: "About" },
-  // { scroll: 0.4,  pos: [-3, 3, 9],     target: [1.4, 0, -3],  label: "Engineering" },
   { scroll: 0.4,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
   { scroll: 0.786453,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
   { scroll: 1.0,  pos: [-2, -3, 11],   target: [-3.5, 5, -9],    label: "Contact" },
+];
+
+// Mobile camera keyframes - centered SR-71 on contact page
+const CAMERA_KEYFRAMES_MOBILE = [
+  { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 1, -2],    label: "Hero" },
+  { scroll: 0.23, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
+  { scroll: 0.28, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
+  { scroll: 0.4,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  { scroll: 0.786453,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  // Mobile contact: SR-71 centered, viewed from below
+  { scroll: 1.0,  pos: [0, 4, 12],    target: [0, 10, -3],    label: "Contact" },
 ];
 
 // ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -295,39 +305,42 @@ function SR71Model() {
 // ============================================================================
 // FLIGHT DIRECTOR (Keyframe-based camera)
 // ============================================================================
-function FlightDirector() {
+function FlightDirector({ isMobile }: { isMobile: boolean }) {
   const { camera } = useThree();
   const currentPosition = useRef(new THREE.Vector3());
   const currentLookAt = useRef(new THREE.Vector3());
   const targetPosition = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
+  
+  // Select keyframes based on device
+  const KEYFRAMES = isMobile ? CAMERA_KEYFRAMES_MOBILE : CAMERA_KEYFRAMES_DESKTOP;
 
   useEffect(() => {
-    const firstKeyframe = CAMERA_KEYFRAMES[0];
+    const firstKeyframe = KEYFRAMES[0];
     currentPosition.current.set(...firstKeyframe.pos as [number, number, number]);
     currentLookAt.current.set(...firstKeyframe.target as [number, number, number]);
     camera.position.copy(currentPosition.current);
     camera.lookAt(currentLookAt.current);
-  }, [camera]);
+  }, [camera, KEYFRAMES]);
 
   useFrame(() => {
     const progress = scrollState.progress;
 
     // Find the two keyframes we're between
-    let startKeyframe = CAMERA_KEYFRAMES[0];
-    let endKeyframe = CAMERA_KEYFRAMES[1];
+    let startKeyframe = KEYFRAMES[0];
+    let endKeyframe = KEYFRAMES[1];
 
-    for (let i = 0; i < CAMERA_KEYFRAMES.length - 1; i++) {
-      if (progress >= CAMERA_KEYFRAMES[i].scroll && progress <= CAMERA_KEYFRAMES[i + 1].scroll) {
-        startKeyframe = CAMERA_KEYFRAMES[i];
-        endKeyframe = CAMERA_KEYFRAMES[i + 1];
+    for (let i = 0; i < KEYFRAMES.length - 1; i++) {
+      if (progress >= KEYFRAMES[i].scroll && progress <= KEYFRAMES[i + 1].scroll) {
+        startKeyframe = KEYFRAMES[i];
+        endKeyframe = KEYFRAMES[i + 1];
         break;
       }
     }
 
     // If past last keyframe, stay at last
-    if (progress >= CAMERA_KEYFRAMES[CAMERA_KEYFRAMES.length - 1].scroll) {
-      startKeyframe = CAMERA_KEYFRAMES[CAMERA_KEYFRAMES.length - 1];
+    if (progress >= KEYFRAMES[KEYFRAMES.length - 1].scroll) {
+      startKeyframe = KEYFRAMES[KEYFRAMES.length - 1];
       endKeyframe = startKeyframe;
     }
 
@@ -375,7 +388,7 @@ function Streamlines() {
     const result: typeof particlesRef.current = [];
     const count = 20;
     const spreadX = 6;
-    const spreadY = 4;
+    const spreadY = 8;
 
     for (let i = 0; i < count; i++) {
       const xOffset = (Math.random() - 0.5) * spreadX;
@@ -437,10 +450,10 @@ function Streamlines() {
 // ============================================================================
 // SCENE
 // ============================================================================
-function Scene() {
+function Scene({ isMobile }: { isMobile: boolean }) {
   return (
     <>
-      <FlightDirector />
+      <FlightDirector isMobile={isMobile} />
       <SR71Model />
       <Streamlines />
 
@@ -520,7 +533,10 @@ export default function AeroWireframe({ className }: AeroWireframeProps) {
   }, [updateScroll]);
 
   // Mobile: larger FOV makes plane appear smaller/further away
-  const fov = isMobile ? 65 : 45;
+  const fov = isMobile ? 115 : 65;
+
+  // Select initial camera position based on device
+  const initialCameraPos = (isMobile ? CAMERA_KEYFRAMES_MOBILE : CAMERA_KEYFRAMES_DESKTOP)[0].pos as [number, number, number];
 
   return (
     <motion.div
@@ -532,12 +548,12 @@ export default function AeroWireframe({ className }: AeroWireframeProps) {
     >
       <Suspense fallback={<Fallback />}>
         <Canvas
-          camera={{ position: CAMERA_KEYFRAMES[0].pos as [number, number, number], fov }}
+          camera={{ position: initialCameraPos, fov }}
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           dpr={[1, 1.5]}
           style={{ background: "transparent" }}
         >
-          <Scene />
+          <Scene isMobile={isMobile} />
         </Canvas>
       </Suspense>
     </motion.div>
