@@ -210,17 +210,16 @@ export default function About() {
             {/* Left Column - Photo (max-w-[280px]) */}
             <motion.div 
               className="lg:col-span-5 relative flex justify-center lg:justify-start"
-              
-              initial={{ opacity: 0, x: -100 }}
-              whileInView={{ opacity: 1, x: 100 }}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 1.4, ease: appleEase }}
               style={{ y: photoY }}
             >
               {/* Photo container - FORCED to 280px max width */}
-              <div className="relative w-full max-w-[280px] cursor-pointer hover:scale-[1.02] transition-all duration-200 opacity-80 hover:opacity-100">
+              <div className="relative w-full max-w-[280px]">
                 {/* Traffic Light Window Header */}
-                <div className="flex items-center justify-between px-4 py-3 border border-white/10 border-b-0 rounded-t-lg bg-white/[0.02]">
+                <div className="flex items-center justify-between px-4 py-3 border border-white/10 border-b-0 rounded-t-lg bg-[#1a1a1a]">
                   <TrafficLights />
                   <span className="text-[10px] font-mono tracking-wider text-engineering-white/50 uppercase">
                     pfp.jpg
@@ -229,7 +228,7 @@ export default function About() {
                 </div>
 
                 {/* Photo container */}
-                <div className="relative aspect-[3/4] rounded-b-lg overflow-hidden border border-white/10 border-t-0 hover:border-turbonite-highlight/30 transition-all duration-200">
+                <div className="relative aspect-[3/4] rounded-b-lg overflow-hidden border border-white/10 border-t-0 hover:border-turbonite-highlight/30 transition-all duration-200 cursor-pointer hover:scale-[1.02] opacity-80 hover:opacity-100">
                   {/* Photo */}
                   <div 
                     className="absolute inset-0 bg-gradient-to-br from-turbonite-base/30 to-deep-black"

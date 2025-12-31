@@ -48,7 +48,7 @@ function DockItem({ icon, label, href, isActive }: DockItemProps) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={`
-          relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl cursor-pointer
+          relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-xl cursor-pointer
           transition-colors duration-200
           ${isActive ? "text-engineering-white" : "text-turbonite-base hover:text-engineering-white"}
         `}
@@ -121,9 +121,16 @@ const ContactIcon = () => (
 
 export default function FloatingDock() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isManuallyOpen, setIsManuallyOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Use ref for manual open state to avoid useEffect re-triggering
+  const isManuallyOpenRef = useRef(false);
+  const lastScrollY = useRef(0);
+  
+  // Dock is visually expanded if: manually opened, scroll-triggered, OR hovering
+  const shouldBeExpanded = isExpanded || isHovering;
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -134,28 +141,25 @@ export default function FloatingDock() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const heroSection = document.getElementById("hero");
       const aboutSection = document.getElementById("about");
       const worksSection = document.getElementById("works");
       const contactSection = document.getElementById("contact");
-      
-      if (!heroSection) return;
 
       const scrollY = window.scrollY;
-      const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
-      const scrollThreshold = heroBottom * 0.3;
+      const scrollThreshold = 80;
+      const scrollingUp = scrollY < lastScrollY.current;
+      lastScrollY.current = scrollY;
 
       // Expansion Logic
-      if (isManuallyOpen) {
-        // Only collapse when user scrolls to VERY TOP (Y=0)
-        if (scrollY === 0) {
-          setIsManuallyOpen(false);
+      if (isManuallyOpenRef.current) {
+        // Only collapse when user SCROLLS UP to very top
+        if (scrollY === 0 && scrollingUp) {
+          isManuallyOpenRef.current = false;
           setIsExpanded(false);
-        } else {
-          setIsExpanded(true);
         }
+        // Otherwise stay expanded when manually opened
       } else {
-        // Standard Auto Behavior
+        // Standard Auto Behavior - opens after 80px scroll
         setIsExpanded(scrollY > scrollThreshold);
       }
 
@@ -173,17 +177,21 @@ export default function FloatingDock() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    // Don't call handleScroll() immediately - let the initial state be collapsed
     
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isManuallyOpen]);
+  }, []);
 
-  const handleDotClick = () => {
-    if (!isExpanded) {
-      setIsManuallyOpen(true);
-      setIsExpanded(true);
-    }
+  const handleDotClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    isManuallyOpenRef.current = true;
+    setIsExpanded(true);
   };
+
+  // Dimensions based on state
+  const collapsedSize = 24;
+  const expandedWidth = isMobile ? 260 : 320;
+  const expandedHeight = isMobile ? 52 : 72;
 
   return (
     <motion.div
@@ -193,22 +201,24 @@ export default function FloatingDock() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 1, duration: 0.6, ease: appleEase }}
     >
-      {/* Background container - handles glass effect and rounding */}
+      {/* Single morphing container */}
       <motion.div
-        className="relative backdrop-blur-md backdrop-saturate-[1.5]"
+        className="relative backdrop-blur-md backdrop-saturate-[1.5] overflow-hidden"
         animate={{
-          width: isExpanded ? (isMobile ? 220 : 320) : 20,
-          height: isExpanded ? (isMobile ? 56 : 72) : 20,
-          borderRadius: isExpanded ? 40 : 9999,
+          width: shouldBeExpanded ? expandedWidth : collapsedSize,
+          height: shouldBeExpanded ? expandedHeight : collapsedSize,
+          borderRadius: shouldBeExpanded ? 40 : 9999,
         }}
-        transition={{ duration: 0.4, ease: appleEase }}
+        transition={{ duration: 0.3, ease: appleEase }}
         style={{
-          backgroundColor: "rgba(5, 5, 5, 0.2)", 
+          backgroundColor: shouldBeExpanded ? "rgba(5, 5, 5, 0.2)" : "rgba(5, 5, 5, 0.5)", 
           border: "1px solid rgba(255, 255, 255, 0.12)",
           boxShadow: `${SHADOW_INTENSITY} ${SHADOW_COLOR}`,
-          cursor: isExpanded ? "default" : "pointer",
+          cursor: shouldBeExpanded ? "default" : "pointer",
         }}
-        onClick={handleDotClick}
+        onClick={!shouldBeExpanded ? handleDotClick : undefined}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
       >
         {/* Inner highlight */}
         <div 
@@ -218,44 +228,32 @@ export default function FloatingDock() {
           }}
         />
 
-        {/* Collapsed Dot */}
-        <AnimatePresence>
-          {!isExpanded && (
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <div className="w-4 h-4 rounded-full bg-turbonite-highlight animate-pulse shadow-[0_0_15px_rgba(140,130,121,0.6)]" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+        {/* Pulsating Dot - visible when collapsed */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          animate={{ opacity: shouldBeExpanded ? 0 : 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="w-3 h-3 rounded-full bg-turbonite-highlight animate-pulse shadow-[0_0_15px_rgba(140,130,121,0.6)]" />
+        </motion.div>
 
-      {/* Dock Items - Rendered OUTSIDE the overflow container */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.nav
-            className="absolute inset-0 flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, delay: 0.1 }}
-          >
-            <div className="flex items-center gap-1 sm:gap-1 px-2">
-              <DockItem icon={<HomeIcon />} label="Home" href="#hero" isActive={activeSection === "hero"} />
-              <div className="w-px h-5 sm:h-6 bg-white/10 mx-1 sm:mx-2" />
-              <DockItem icon={<AboutIcon />} label="About" href="#about" isActive={activeSection === "about"} />
-              <div className="w-px h-5 sm:h-6 bg-white/10 mx-1 sm:mx-2" />
-              <DockItem icon={<WorksIcon />} label="Works" href="#works" isActive={activeSection === "works"} />
-              <div className="w-px h-5 sm:h-6 bg-white/10 mx-1 sm:mx-2" />
-              <DockItem icon={<ContactIcon />} label="Contact" href="#contact" isActive={activeSection === "contact"} />
-            </div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
+        {/* Dock Items - visible when expanded */}
+        <motion.nav
+          className="absolute inset-0 flex items-center justify-center"
+          animate={{ opacity: shouldBeExpanded ? 1 : 0 }}
+          transition={{ duration: 0.2, delay: shouldBeExpanded ? 0.1 : 0 }}
+        >
+          <div className="flex items-center gap-0.5 sm:gap-1 px-1 sm:px-2">
+            <DockItem icon={<HomeIcon />} label="Home" href="#hero" isActive={activeSection === "hero"} />
+            <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
+            <DockItem icon={<AboutIcon />} label="About" href="#about" isActive={activeSection === "about"} />
+            <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
+            <DockItem icon={<WorksIcon />} label="Works" href="#works" isActive={activeSection === "works"} />
+            <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
+            <DockItem icon={<ContactIcon />} label="Contact" href="#contact" isActive={activeSection === "contact"} />
+          </div>
+        </motion.nav>
+      </motion.div>
     </motion.div>
   );
 }

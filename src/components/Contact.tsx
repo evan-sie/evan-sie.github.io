@@ -39,12 +39,12 @@ export default function Contact() {
     },
   };
 
-  // Fly-in from right animation
+  // Fly-in animation
   const itemVariants = {
-    hidden: { opacity: 0, x: 100 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
-      x: 60,
+      y: 0,
       transition: {
         duration: 0.9,
         ease: appleEase,
@@ -57,13 +57,13 @@ export default function Contact() {
       <section 
         ref={sectionRef}
         id="contact" 
-        className="relative min-h-screen flex items-center py-20 px-20 sm:py-32"
+        className="relative min-h-screen flex items-center py-20 px-4 sm:px-8 md:px-20 sm:py-32"
       >
         {/* Subtle border accent - moved to left */}
-        <div className="absolute top-0 left-8 md:left-12 lg:left-16 w-px h-32 bg-gradient-to-b from-transparent via-turbonite-base/20 to-transparent" />
+        <div className="absolute top-0 left-8 md:left-12 lg:left-16 w-px h-32 bg-gradient-to-b from-transparent via-turbonite-base/20 to-transparent hidden sm:block" />
 
         <motion.div
-          className="relative container mx-auto px-4 sm:px-6 md:px-12 lg:px-16 max-w-4xl text-left ml-0 lg:ml-0 lg:mr-auto"
+          className="relative w-full max-w-4xl text-center sm:text-left mx-auto sm:mx-0 sm:ml-8 md:ml-16 lg:ml-24"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -93,7 +93,7 @@ export default function Contact() {
 
           {/* Divider */}
           <motion.div
-            className="w-20 sm:w-24 h-px bg-gradient-to-r from-transparent via-turbonite-highlight to-transparent mb-6 sm:mb-8"
+            className="w-20 sm:w-24 h-px bg-gradient-to-r from-transparent via-turbonite-highlight to-transparent mb-6 sm:mb-8 mx-auto sm:mx-0"
             variants={itemVariants}
           />
 
@@ -122,7 +122,7 @@ export default function Contact() {
 
           {/* Action links - LinkedIn & Resume */}
           <motion.div
-            className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 md:gap-12"
+            className="flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 md:gap-12 justify-center sm:justify-start"
             variants={itemVariants}
           >
             <motion.a

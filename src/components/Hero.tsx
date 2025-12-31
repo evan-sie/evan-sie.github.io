@@ -48,7 +48,7 @@ function Crosshair({ position }: { position: "top-left" | "top-right" | "bottom-
       className={`absolute ${positionClasses[position]} text-turbonite-base/15 font-mono text-lg z-[5]`}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 2.2, duration: 0.6, ease: appleEase }}
+      transition={{ delay: 2.8, duration: 0.6, ease: appleEase }}
     >
       +
     </motion.div>
@@ -70,7 +70,7 @@ function ScrollIndicator() {
       animate={{ opacity: 1 }}
       transition={{ delay: 2.5, duration: 0.8, ease: appleEase }}
     >
-      <span className="text-[8px] font-mono tracking-[0.25em] text-turbonite-base/40 uppercase mb-3">
+      <span className="text-[15px] font-mono tracking-[0.25em] text-turbonite-base/40 uppercase mb-3">
         Scroll
       </span>
       <motion.div
@@ -115,7 +115,7 @@ export default function Hero() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: 0.55,
         delayChildren: 1.5, // 1.5s delay - plane flies in first
       },
     },

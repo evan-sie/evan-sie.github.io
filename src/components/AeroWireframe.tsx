@@ -485,6 +485,15 @@ export default function AeroWireframe({ className }: AeroWireframeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const lastUpdate = useRef(0);
   const rafRef = useRef<number>(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile, { passive: true });
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const updateScroll = useCallback(() => {
     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -510,6 +519,9 @@ export default function AeroWireframe({ className }: AeroWireframeProps) {
     };
   }, [updateScroll]);
 
+  // Mobile: larger FOV makes plane appear smaller/further away
+  const fov = isMobile ? 65 : 45;
+
   return (
     <motion.div
       ref={containerRef}
@@ -520,7 +532,7 @@ export default function AeroWireframe({ className }: AeroWireframeProps) {
     >
       <Suspense fallback={<Fallback />}>
         <Canvas
-          camera={{ position: CAMERA_KEYFRAMES[0].pos as [number, number, number], fov: 45 }}
+          camera={{ position: CAMERA_KEYFRAMES[0].pos as [number, number, number], fov }}
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           dpr={[1, 1.5]}
           style={{ background: "transparent" }}
