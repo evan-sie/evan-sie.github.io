@@ -6,6 +6,11 @@ import Lenis from "lenis";
 
 const appleEase = [0.16, 1, 0.3, 1] as const;
 
+// ═══════════════════════════════════════════════════════════════════════════
+// MOBILE TEXT POSITION CONFIG - Adjust this to move hero text on mobile
+// ═══════════════════════════════════════════════════════════════════════════
+const MOBILE_TEXT_OFFSET_Y = -130; // Negative = up, Positive = down (in pixels)
+
 function TechnicalDataPoint({ 
   position, 
   label, 
@@ -86,7 +91,16 @@ function ScrollIndicator() {
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const [spotlightPos, setSpotlightPos] = useState({ x: 0.5, y: 0.5 });
+  const [isMobile, setIsMobile] = useState(false);
   const lastUpdate = useRef(0);
+
+  // Detect mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile, { passive: true });
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const { scrollY } = useScroll();
   const titleY = useTransform(scrollY, [0, 800], [0, 200]);
@@ -169,7 +183,10 @@ export default function Hero() {
       <TechnicalDataPoint position="top-left" label="" value="   // DALLAS, TX" />
       <TechnicalDataPoint position="top-right" label="Ver" value="v2025.12.25" />
       <TechnicalDataPoint position="bottom-left" label="" value="" />
-      <TechnicalDataPoint position="bottom-right" label="Lockheed" value="//SR-71 Blackbird A" />
+      {/* Hide Lockheed text on mobile - competes with scroll indicator */}
+      {!isMobile && (
+        <TechnicalDataPoint position="bottom-right" label="Lockheed" value="//SR-71 Blackbird A" />
+      )}
 
       {/* Crosshairs - z-[5] */}
       <Crosshair position="top-left" />
@@ -178,13 +195,23 @@ export default function Hero() {
       <Crosshair position="bottom-right" />
 
       {/* Main Typography - z-10 (plane at z-20 flies OVER this) */}
-      <motion.div
-        className="relative text-center z-10 px-4 sm:px-6 w-full flex flex-col items-center justify-center"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        style={{ y: titleY, opacity: titleOpacity }}
+      {/* Wrapper for mobile vertical offset */}
+      <div 
+        className="relative z-10 w-full flex flex-col items-center justify-center"
+        style={{ 
+          transform: `translateY(${isMobile ? MOBILE_TEXT_OFFSET_Y : 0}px)`,
+        }}
       >
+        <motion.div
+          className="relative text-center px-4 sm:px-6 w-full flex flex-col items-center justify-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          style={{ 
+            y: titleY, 
+            opacity: titleOpacity,
+          }}
+        >
         <motion.p
           className="text-[10px] sm:text-xs md:text-sm tracking-[0.3em] sm:tracking-[0.4em] text-turbonite-highlight uppercase mb-4 sm:mb-6 md:mb-8 font-mono text-center"
           variants={itemVariants}
@@ -233,7 +260,8 @@ export default function Hero() {
         >
           University of Texas at Dallas
         </motion.p>
-      </motion.div>
+        </motion.div>
+      </div>
 
       <ScrollIndicator />
     </section>

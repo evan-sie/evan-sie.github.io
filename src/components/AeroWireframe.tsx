@@ -102,7 +102,7 @@ const CAMERA_KEYFRAMES_DESKTOP = [
 
 // Mobile camera keyframes - centered SR-71 on contact page
 const CAMERA_KEYFRAMES_MOBILE = [
-  { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 1, -2],    label: "Hero" },
+  { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 3, -2],    label: "Hero" },
   { scroll: 0.23, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
   { scroll: 0.28, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
   { scroll: 0.4,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
