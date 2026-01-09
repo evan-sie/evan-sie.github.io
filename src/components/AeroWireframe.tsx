@@ -26,15 +26,15 @@ const MESH_ROTATION_Y = Math.PI;
 
 // AFTERBURNER CONFIG
 const AFTERBURNER = {
-  leftPos: [-1.19, 0.77, 4.0] as [number, number, number],
-  rightPos: [1.25, 0.77, 4.0] as [number, number, number],
+  leftPos: [-1.19, 0.77, 5.0] as [number, number, number],
+  rightPos: [1.25, 0.77, 5.0] as [number, number, number],
   scale: 1.5,
-  length: 1.5,
+  length: 3,
   radius: 0.15,
   // Flicker animation parameters
-  flickerSpeed: 30,           // Base frequency
-  flickerIntensity: 0.05,     // Opacity variation range
-  baseOpacity: 0.1,
+  flickerSpeed: 42,           // Base frequency
+  flickerIntensity: 0.02,     // Opacity variation range
+  baseOpacity: 0.001,
 };
 
 // ENGINE NACELLE OUTLINES

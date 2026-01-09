@@ -18,7 +18,7 @@ export default function SmoothScrollProvider({ children }: SmoothScrollProviderP
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1, // More responsive wheel travel
+      wheelMultiplier: 1.2, // More responsive wheel travel
       touchMultiplier: 2,
     });
 

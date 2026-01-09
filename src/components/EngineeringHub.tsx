@@ -26,24 +26,25 @@ const layoutTransition = {
 
 const projects: Project[] = [
   {
-    id: "iPod Keychain",
-    title: "Music Control Keychain",
-    date: "2026.01",
+    id: "High Altitude Weather Balloon",
+    title: "High Altitude Balloon",
+    date: "2025.07",
     span: "tall",
-    description: "A solar powered keychain with a BLE chip that controls your music",
-    tags: ["ESP32", "SOLAR", "3D Printing"],
-    image: "/projects/ipod-keychain.jpg",
-    gifUrl: "/projects/attachment.gif", // Add GIF URL when available: "/projects/ipod-keychain.gif"
-    galleryImages: undefined, // Add gallery: ["/projects/ipod-1.jpg", "/projects/ipod-2.jpg"]
-    content: `This project involved designing and building a stylish yet functional keychain using a BLE chip that connects to your phone and a solar panel to power the device.
+    description: "A high altitude weather balloon payload to measure temperature, pressure, and humidity",
+    tags: ["Arduino", "CAD", "3D Printing"],
+    image: "/projects/horizon.jpg",
+    gifUrl: undefined,
+    galleryImages: ["/projects/launch.mp4", "/projects/burst.mp4"],
+    content: `This project was part of my involvment in AIAA's research division where 5 of us built and launched UTD's first high altitude weather balloon reaching 92,404ft (28,164m) in altitude.
+    Watch the full flight here: https://youtu.be/2wPQeWOTOIY?si=9Q7SsurK7C8yXTe6
 
 **Key Achievements:**
-- Custom 3D printed enclosure
-- XIAO nRF52840 chip for BLE connectivity
-- Optimized battery life using ultra deep sleep mode
-- 0.5W solar panel to charge the 2800mAh battery
-
-This project was a fun challenge to see how small and low powered I could make a something that still would be functional and stylish.`,
+- Tested electronic components to -65C
+- Designed custom mounting brackets for top, horizontal, and bottom facing cameras
+- Calculated requireed helium needed for the balloon to reach desired altitude
+- Sourced components and sensors for the payload
+- Published a technical research paper
+`
   },
   {
     id: "calculator",
@@ -63,64 +64,67 @@ This project was a fun challenge to see how small and low powered I could make a
     I eventually found a spot where I could solder the inputs of the powerboost to the inputs of the calculator which means I could use the calculator's built in mini-USB port to charge.
     Finally I soldered the 5V output to the + and - terminals of the calculator where the AAA batteries used to be.`,
   },
-  {
-    id: "Mirror",
-    title: "Smart Mirror",
-    date: "2025.01",
-    span: "tall",
-    description: "Modyfying a fitness mirror to display time, weather, and ETA to UTD",
-    tags: ["Raspberry Pi", "Python", "Zsh/Bash"],
-    image: "/projects/mirror.JPG",
-    gifUrl: undefined,
-    galleryImages: undefined,
-    content: `I had large fitness mirror which sat unsused in my room because the software it ran on was discontinued years ago.
-   Since the mirror already
-    had a giant TV screen inside it, I had an idea to reporgram it to display time, weather, ETA to UTD and other useful information. After some research I discovered the company that made the mirror (formally called Mirror) was aquired by Lululemon but has since been discontinued. I also found through a Github repository
-     that others had attempted to reverse engineer the mirror's screen. Unfortunatly, I happened to have the version 1 of the screen which was not able to be reverse engineered due to the proprietary connector. This was a let down and put the project on hold for a while. One day I was thinking about it again and realized that I didnt need to use the proprietary screen and I could just retrofit an old 1080p monitor I also had laying around.
-    I took apart the old monitor so that it was just the bare screen and retrofitted it to where the original screen was. 
-    I found an open source project called 'Magic Mirror' which ran on electron on a Raspberry Pi. After putting everything together,
-    I was left with a sleek, minimalistic UX interface that elevated the aesthetic of the mirror and made it much more useful.
+//   {
+//     id: "Mirror",
+//     title: "Smart Mirror",
+//     date: "2025.01",
+//     span: "tall",
+//     description: "Modyfying a fitness mirror to display time, weather, and ETA to UTD",
+//     tags: ["Raspberry Pi", "Python", "Zsh/Bash"],
+//     image: "/projects/mirror.JPG",
+//     gifUrl: undefined,
+//     galleryImages: undefined,
+//     content: `I had large fitness mirror which sat unsused in my room because the software it ran on was discontinued years ago.
+//    Since the mirror already
+//     had a giant TV screen inside it, I had an idea to reporgram it to display time, weather, ETA to UTD and other useful information. After some research I discovered the company that made the mirror (formally called Mirror) was aquired by Lululemon but has since been discontinued. I also found through a Github repository
+//      that others had attempted to reverse engineer the mirror's screen. Unfortunatly, I happened to have the version 1 of the screen which was not able to be reverse engineered due to the proprietary connector. This was a let down and put the project on hold for a while. One day I was thinking about it again and realized that I didnt need to use the proprietary screen and I could just retrofit an old 1080p monitor I also had laying around.
+//     I took apart the old monitor so that it was just the bare screen and retrofitted it to where the original screen was. 
+//     I found an open source project called 'Magic Mirror' which ran on electron on a Raspberry Pi. After putting everything together,
+//     I was left with a sleek, minimalistic UX interface that elevated the aesthetic of the mirror and made it much more useful.
 
  
 
-**Technical Details:**
-- Python script with Zsh/Bash to update the information every minute
-- Raspberry Pi 3A+
-- 1080p monitor
+// **Technical Details:**
+// - Python script with Zsh/Bash to update the information every minute
+// - Raspberry Pi 3A+
+// - 1080p monitor
 
 
 
-Though it was a shame I could not save the original TV screen and the rest of the mirror components to turning into e-waste, I was at least able to salvage
-the webcam hardware and the lens to repurpose for a new project, and maybe one day the TV screen's connector would get reverse engineered so that I could turn it into another functoinal display in a future project. .`,
-  },
-  {
-    id: "fpv",
-    title: "Freestyle FPV Drone",
-    date: "2021.07",
-    span: "default",
-    description: "A 3 inch freestyle FPV drone ",
-    tags: ["Betaflight", "Soldering", "UAV Piloting"],
-    image: "/projects/drone.jpg",
-    gifUrl: undefined,
-    galleryImages: undefined,
-    content: `This was less of a technical achievement and more of a personal hobby where (through typical enginering fashion of trial and error) I learned most of the practical, hands-on engineering skills I use in most of my other projects.
+// Though it was a shame I could not save the original TV screen and the rest of the mirror components to turning into e-waste, I was at least able to salvage
+// the webcam hardware and the lens to repurpose for a new project, and maybe one day the TV screen's connector would get reverse engineered so that I could turn it into another functoinal display in a future project. .`,
+//   },
+
+  
+//   {
+//     id: "fpv",
+//     title: "Freestyle FPV Drone",
+//     date: "2021.07",
+//     span: "default",
+//     description: "A 3 inch freestyle FPV drone ",
+//     tags: ["Betaflight", "Soldering", "UAV Piloting"],
+//     image: "/projects/drone.jpg",
+//     gifUrl: undefined,
+//     galleryImages: undefined,
+//     content: `This was less of a technical achievement and more of a personal hobby where (through typical enginering fashion of trial and error) I learned most of the practical, hands-on engineering skills I use in most of my other projects.
 
 
-**Skills Learned:**
-- Soldering. Before starting this hobby I had never soldered before and always asked my Dad (who's an electrical engineer) for help in soldering anything I needed.
-But after watching him do it for years, and this being the first "project" I funded entirely on my own, I decided to give it shot, soldering + and - terminals to an FPV AIO camera.
-I did not even have a proper table, nor helping hands (the plier like things that hold the things you solder) but I did it anyway. A major learning curve I overcame was when I had to solder a new micro SD card slot to my FPV camera's PCB. This was no easy task as the solder pins were a mere milimeter in length with a distance between them of less than that. This was where I really got to put in
-my practice, and helped me understand electrical engineering in a way I've never done before.Since then I was able to accelerate my engineering projects to a new level with this newfound skill.
-- Electrial Engineering. I had a very basic understanding of circuits in the past as it was not a primary interest of mine. I just knew that a closed loop with a light bulb & power source would light up, and shorting batteries by bridging + and - was bad.
-However this hobby was primarily electronics and circuits based, which forced me to learn about capacitors, ICs, resistors, heat management and electromagnetism (radio). A huge learning expereince was when I had to put a GPS module on the drone, but it was failing to detect any satelites. After some reasearch I learned that a reason it failed was due to 
-electromagnetic intereference from the dron'es ESC's and capactiors. Which forced me to learn about ground planes, and how to orient and wire it in a way that would minimize interference. Radio was of a particular interest of me because the very notion of transmitting/recieving data and video over the air seemed like magic.
-I learned all about antenna theory, RF design, and how to build a radio system that would maximize range and minimize interference, something that I would be able to integrate into my current high altitude weather balloon project.
-- 3D printing. 3D printing was always something that seemed like science fiction. The very notion that I could design something on a computer and be able to hold that part in my hands felt too good not to try out.
-- UAV Piloting. This was the fun part of the hobby, where all of your hard work relies on your ability to pilot a drone. This is not a typical 
-piloting experience however, using VR like goggles I would be able to see the drone's live feed in real time. Futhermore, the drone's flight controller(and thus its flight dynamics) is very "manual" (unlike a typical drone found in a toy section of a Walmart), it is akin to driving a manual transmission car. It takes lots of practice and coordination not to stall the engine, which in this case is not to destroy hundreds of dollars and countless hours of work. I find this to be a useful skill
-due to the rapid advancements of UAVs in the defense and civilian industry, which requires skilled pilots to operate successfully.`,
-  },
+// **Skills Learned:**
+// - Soldering. Before starting this hobby I had never soldered before and always asked my Dad (who's an electrical engineer) for help in soldering anything I needed.
+// But after watching him do it for years, and this being the first "project" I funded entirely on my own, I decided to give it shot, soldering + and - terminals to an FPV AIO camera.
+// I did not even have a proper table, nor helping hands (the plier like things that hold the things you solder) but I did it anyway. A major learning curve I overcame was when I had to solder a new micro SD card slot to my FPV camera's PCB. This was no easy task as the solder pins were a mere milimeter in length with a distance between them of less than that. This was where I really got to put in
+// my practice, and helped me understand electrical engineering in a way I've never done before.Since then I was able to accelerate my engineering projects to a new level with this newfound skill.
+// - Electrial Engineering. I had a very basic understanding of circuits in the past as it was not a primary interest of mine. I just knew that a closed loop with a light bulb & power source would light up, and shorting batteries by bridging + and - was bad.
+// However this hobby was primarily electronics and circuits based, which forced me to learn about capacitors, ICs, resistors, heat management and electromagnetism (radio). A huge learning expereince was when I had to put a GPS module on the drone, but it was failing to detect any satelites. After some reasearch I learned that a reason it failed was due to 
+// electromagnetic intereference from the dron'es ESC's and capactiors. Which forced me to learn about ground planes, and how to orient and wire it in a way that would minimize interference. Radio was of a particular interest of me because the very notion of transmitting/recieving data and video over the air seemed like magic.
+// I learned all about antenna theory, RF design, and how to build a radio system that would maximize range and minimize interference, something that I would be able to integrate into my current high altitude weather balloon project.
+// - 3D printing. 3D printing was always something that seemed like science fiction. The very notion that I could design something on a computer and be able to hold that part in my hands felt too good not to try out.
+// - UAV Piloting. This was the fun part of the hobby, where all of your hard work relies on your ability to pilot a drone. This is not a typical 
+// piloting experience however, using VR like goggles I would be able to see the drone's live feed in real time. Futhermore, the drone's flight controller(and thus its flight dynamics) is very "manual" (unlike a typical drone found in a toy section of a Walmart), it is akin to driving a manual transmission car. It takes lots of practice and coordination not to stall the engine, which in this case is not to destroy hundreds of dollars and countless hours of work. I find this to be a useful skill
+// due to the rapid advancements of UAVs in the defense and civilian industry, which requires skilled pilots to operate successfully.`,
+//   },
 ];
+
 
 function TrafficLights() {
   return (
@@ -317,6 +321,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         className="fixed inset-4 md:inset-12 lg:inset-24 z-50 flex flex-col bg-deep-black/20 border border-white/10 rounded-lg overflow-hidden font-porsche"
         layoutId={`project-${project.id}`}
         transition={layoutTransition}
+        data-cursor-default="true"
       >
         {/* Title Bar */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02] shrink-0">
@@ -337,12 +342,12 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
 
         {/* Expanded content */}
         <motion.div 
-          className="flex-1 overflow-hidden"
+          className="flex-1 overflow-y-auto overflow-x-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 lg:h-full">
             {/* Left - Main Image */}
             <div className="relative min-h-[300px] lg:min-h-full border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden">
               <img
@@ -382,7 +387,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
             </div>
 
             {/* Right - Content */}
-            <div className="p-6 md:p-8 lg:p-10 overflow-y-auto">
+            <div className="p-6 md:p-8 lg:p-10 lg:overflow-y-auto">
               <div className="mb-8">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   {project.tags.map((tag) => (
@@ -455,7 +460,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                 })}
               </div>
 
-              {/* Gallery Images */}
+              {/* Gallery Images & Videos */}
               {project.galleryImages && project.galleryImages.length > 0 && (
                 <div className="mt-8">
                   <div className="w-full h-px bg-gradient-to-r from-turbonite-highlight/50 via-turbonite-base/20 to-transparent mb-6" />
@@ -463,21 +468,39 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                     Gallery
                   </p>
                   <div className="grid grid-cols-2 gap-3">
-                    {project.galleryImages.map((imgUrl, idx) => (
-                      <div 
-                        key={idx} 
-                        className="relative aspect-video rounded-lg overflow-hidden border border-white/10"
-                      >
-                        <img
-                          src={imgUrl}
-                          alt={`${project.title} gallery ${idx + 1}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    ))}
+                    {project.galleryImages.map((mediaUrl, idx) => {
+                      // Check if it's a video file
+                      const isVideo = /\.(mp4|webm|mov|m4v)$/i.test(mediaUrl);
+                      
+                      return (
+                        <div 
+                          key={idx} 
+                          className="relative aspect-video rounded-lg overflow-hidden border border-white/10"
+                        >
+                          {isVideo ? (
+                            <video
+                              src={mediaUrl}
+                              className="w-full h-full object-cover"
+                              controls
+                              muted
+                              autoPlay
+                              loop
+                              playsInline
+                              preload="auto"
+                            />
+                          ) : (
+                            <img
+                              src={mediaUrl}
+                              alt={`${project.title} gallery ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -486,45 +509,6 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         </motion.div>
       </motion.article>
     </>
-  );
-}
-
-function StatsSection() {
-  const stats = [
-    { value: "10", label: " years of Engineering Projects", suffix: "+" },
-  ];
-
-  return (
-    <motion.div
-      className="
-        flex justify-center items-center
-        mt-16 sm:mt-24 py-8 sm:py-12 border-t border-b border-white/5
-        min-h-[120px]
-      "
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px" }}
-      transition={{ duration: 0.8, ease: appleEase }}
-    >
-      {stats.map((stat, index) => (
-        <motion.div
-          key={stat.label}
-          className="text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.1, duration: 0.6, ease: appleEase }}
-        >
-          <div className="text-3xl md:text-4xl font-bold text-engineering-white font-mono tracking-tight">
-            {stat.value}
-            <span className="text-turbonite-highlight">{stat.suffix}</span>
-          </div>
-          <div className="mt-2 text-[10px] font-mono tracking-[0.2em] text-turbonite-base uppercase">
-            {stat.label}
-          </div>
-        </motion.div>
-      ))}
-    </motion.div>
   );
 }
 
@@ -553,7 +537,7 @@ function ToolsSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.03, duration: 0.4, ease: appleEase }}
+            transition={{ delay: index * 0, duration: 0, ease: appleEase }}
             whileHover={{ y: -2 }}
           >
             {tool}
@@ -642,7 +626,6 @@ export default function EngineeringHub() {
             ))}
           </div>
 
-          <StatsSection />
           <ToolsSection />
         </div>
       </section>

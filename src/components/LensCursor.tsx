@@ -46,6 +46,9 @@ export default function LensCursor() {
       const target = e.target as HTMLElement;
       const tagName = target.tagName.toLowerCase();
       
+      // Check if cursor should stay default (e.g., inside expanded modals)
+      const forceDefault = !!target.closest("[data-cursor-default]");
+      
       // Check for text elements (I-beam mode)
       const isTextElement = 
         tagName === "p" ||
@@ -61,8 +64,8 @@ export default function LensCursor() {
         tagName === "label" ||
         tagName === "li";
       
-      // Check for clickable elements
-      const isClickable = 
+      // Check for clickable elements (but not if inside a cursor-default zone)
+      const isClickable = !forceDefault && (
         tagName === "a" ||
         tagName === "button" ||
         !!target.closest("a") ||
@@ -70,11 +73,14 @@ export default function LensCursor() {
         !!target.closest("[role='button']") ||
         target.classList.contains("cursor-pointer") ||
         !!target.closest(".cursor-pointer") ||
-        !!target.closest("article") ||
-        window.getComputedStyle(target).cursor === "pointer";
+        !!target.closest("article:not([data-cursor-default])") ||
+        window.getComputedStyle(target).cursor === "pointer"
+      );
       
       // Determine mode priority: clickable > text > default
-      if (isClickable) {
+      if (forceDefault) {
+        setMode("default");
+      } else if (isClickable) {
         setMode("pointer");
       } else if (isTextElement && !isClickable) {
         setMode("text");

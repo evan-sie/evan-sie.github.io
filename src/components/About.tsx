@@ -61,7 +61,7 @@ function CourseModal({ course, onClose }: CourseModalProps) {
     <>
       {/* Backdrop */}
       <motion.div
-        className="fixed inset-0 bg-deep-black/90 backdrop-blur-sm z-[70]"
+        className="fixed inset-0 backdrop-blur-sm bg-deep-black/20 z-[70]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -71,13 +71,13 @@ function CourseModal({ course, onClose }: CourseModalProps) {
 
       {/* Modal - Centered, Glassmorphic */}
       <motion.div
-        className="fixed inset-0 flex items-center justify-center z-[80] pointer-events-none p-4"
+        className="fixed inset-0 flex items-center bg-deep-black/20 backdrop-blur-sm justify-center z-[80] pointer-events-none p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="relative w-full max-w-lg bg-deep-black/90 backdrop-blur-xl border border-white/10 rounded-lg overflow-hidden pointer-events-auto"
+          className="relative w-full max-w-lg bg-deep-black/10 backdrop-blur-xl border border-white/10 rounded-lg overflow-hidden pointer-events-auto"
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
@@ -85,7 +85,7 @@ function CourseModal({ course, onClose }: CourseModalProps) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Traffic Light Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+          <div className="flex items-center justify-between bg-deep-black/50 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
             <TrafficLights />
             <span className="text-[10px] font-mono tracking-wider text-engineering-white/50 uppercase">
               {course.code}
@@ -145,13 +145,13 @@ function CourseChip({ course, index, onClick }: CourseChipProps) {
   return (
     <motion.button
       onClick={onClick}
-      className="px-3 py-1.5 text-xs font-mono tracking-wider text-turbonite-base bg-white/[0.05] border border-white/5 rounded hover:border-turbonite-highlight/30 hover:text-engineering-white hover:bg-white/[0.14] transition-all duration-200 cursor-pointer"
+      className="px-3 py-1.5 text-xs font-mono tracking-wider text-engineering-white/20 bg-white/[0.05] border border-white/5 rounded hover:border-turbonite-highlight/30 hover:text-engineering-white hover:bg-white/[0.14] transition-all duration-900 cursor-pointer"
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.01, duration: 0.5, ease: appleEase }}
-      whileHover={{ y: -2, transition: { duration: 0.2 } }}
-      whileTap={{ scale: 0.98 }}
+      transition={{ delay: index * 0.01, duration: 0, ease: appleEase }}
+      whileHover={{ y: -2, transition: { duration: 0 } }}
+      whileTap={{ scale: 0.95 }}
     >
       {course.name}
     </motion.button>
@@ -228,7 +228,7 @@ export default function About() {
                 </div>
 
                 {/* Photo container */}
-                <div className="relative aspect-[3/4] rounded-b-lg overflow-hidden border border-white/10 border-t-0 hover:border-turbonite-highlight/30 transition-all duration-200 cursor-pointer hover:scale-[1.02] opacity-80 hover:opacity-100">
+                <div className="relative aspect-[3/4] rounded-b-lg overflow-hidden bg-deep-black/20 backdrop-blur-sm border border-white/10 border-t-0 hover:border-turbonite-highlight/30 transition-all duration-200 cursor-pointer hover:scale-[1.02] opacity-100 hover:brightness-125">
                   {/* Photo */}
                   <div 
                     className="absolute inset-0 bg-gradient-to-br from-turbonite-base/30 to-deep-black"
