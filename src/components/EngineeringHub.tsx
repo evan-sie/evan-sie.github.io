@@ -342,14 +342,14 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
 
         {/* Expanded content */}
         <motion.div 
-          className="flex-1 overflow-y-auto overflow-x-hidden"
+          className="flex-1 overflow-y-auto overflow-x-hidden min-h-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 lg:h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 h-full lg:h-auto">
             {/* Left - Main Image */}
-            <div className="relative min-h-[300px] lg:min-h-full border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden">
+            <div className="relative min-h-[300px] lg:min-h-full lg:sticky lg:top-0 border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden">
               <img
                 src={project.image}
                 alt={project.title}
@@ -387,7 +387,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
             </div>
 
             {/* Right - Content */}
-            <div className="p-6 md:p-8 lg:p-10 lg:overflow-y-auto">
+            <div className="p-6 md:p-8 lg:p-10 lg:h-full lg:overflow-y-auto lg:min-h-0">
               <div className="mb-8">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   {project.tags.map((tag) => (
@@ -558,6 +558,19 @@ export default function EngineeringHub() {
   });
 
   const headerY = useTransform(scrollYProgress, [0, 0.4], [40, 0]);
+
+  // Notify FloatingDock when modal is open/closed
+  useEffect(() => {
+    if (expandedProject) {
+      document.body.setAttribute("data-modal-open", "true");
+    } else {
+      document.body.removeAttribute("data-modal-open");
+    }
+    
+    return () => {
+      document.body.removeAttribute("data-modal-open");
+    };
+  }, [expandedProject]);
 
   const handleExpand = (project: Project) => {
     setExpandedProject(project);

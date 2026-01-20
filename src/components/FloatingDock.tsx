@@ -124,19 +124,39 @@ export default function FloatingDock() {
   const [isHovering, setIsHovering] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Use ref for manual open state to avoid useEffect re-triggering
   const isManuallyOpenRef = useRef(false);
   const lastScrollY = useRef(0);
   
-  // Dock is visually expanded if: manually opened, scroll-triggered, OR hovering
-  const shouldBeExpanded = isExpanded || isHovering;
+  // Dock is visually expanded if: manually opened, scroll-triggered, OR hovering (but NOT when modal is open)
+  const shouldBeExpanded = !isModalOpen && (isExpanded || isHovering);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
     checkMobile();
     window.addEventListener("resize", checkMobile, { passive: true });
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Watch for modal open state
+  useEffect(() => {
+    const checkModalState = () => {
+      setIsModalOpen(document.body.hasAttribute("data-modal-open"));
+    };
+    
+    // Check initially
+    checkModalState();
+    
+    // Watch for changes using MutationObserver
+    const observer = new MutationObserver(checkModalState);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-modal-open"],
+    });
+    
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -198,7 +218,11 @@ export default function FloatingDock() {
       className="fixed bottom-6 sm:bottom-8 left-1/2 z-[60]"
       style={{ x: "-50%" }}
       initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      animate={{ 
+        y: 0, 
+        opacity: isModalOpen ? 0 : 1,
+        pointerEvents: isModalOpen ? "none" : "auto",
+      }}
       transition={{ delay: 1, duration: 0.6, ease: appleEase }}
     >
       {/* Single morphing container */}
