@@ -1,44 +1,94 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useSpring } from "framer-motion";
 import Lenis from "lenis";
 
 interface TrafficLightsProps {
   onClick?: () => void;
 }
 
+// Unified spring - snappy but heavy Porsche precision (same as dock icons)
+const MAGNETIC_SPRING = { stiffness: 350, damping: 35 };
+
 function TrafficLights({ onClick }: TrafficLightsProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   
+  // Spring-based offset for magnetic tug (same as dock icons)
+  const offsetX = useSpring(0, MAGNETIC_SPRING);
+  const offsetY = useSpring(0, MAGNETIC_SPRING);
+  const magneticScale = useSpring(1, MAGNETIC_SPRING);
+  
+  // Listen for magnetic events
+  useEffect(() => {
+    const el = buttonRef.current;
+    if (!el) return;
+    
+    const handleMove = (e: Event) => {
+      const { deltaX, deltaY } = (e as CustomEvent).detail;
+      offsetX.set(deltaX);
+      offsetY.set(deltaY);
+      magneticScale.set(1.85); // 15% more than original 1.6x
+      setIsHovered(true);
+    };
+    
+    const handleLeave = () => {
+      offsetX.set(0);
+      offsetY.set(0);
+      magneticScale.set(1);
+      setIsHovered(false);
+    };
+    
+    el.addEventListener("magnetic-move", handleMove);
+    el.addEventListener("magnetic-leave", handleLeave);
+    
+    return () => {
+      el.removeEventListener("magnetic-move", handleMove);
+      el.removeEventListener("magnetic-leave", handleLeave);
+    };
+  }, [offsetX, offsetY, magneticScale]);
+  
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Reset cursor state immediately before modal closes
+    window.dispatchEvent(new CustomEvent("cursor-reset"));
+    onClick?.();
+  };
+  
   return (
-    <motion.button
-      onClick={(e) => { e.stopPropagation(); onClick?.(); }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded transition-colors duration-150 cursor-pointer"
-      whileTap={{ scale: 0.95 }}
-    >
-      <motion.div 
-        className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] relative"
-        animate={{ scale: isHovered ? 1.9 : 1 }}
-        transition={{ duration: 0.15 }}
-      >
-        {isHovered && (
-          <svg 
-            className="absolute inset-0 w-full h-full p-0.5" 
+    <div className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded">
+      {/* Larger invisible hit area - acts as magnetic zone */}
+      <div className="relative -m-3 p-3" data-magnetic-zone="true">
+        {/* Red close button - magnetic target with tug effect */}
+        <motion.button
+          ref={buttonRef}
+          onClick={handleClick}
+          data-magnetic-target="true"
+          className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] cursor-pointer flex items-center justify-center relative"
+          style={{
+            x: offsetX,
+            y: offsetY,
+            scale: magneticScale,
+          }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <motion.svg 
+            className="absolute w-full h-full p-0.5" 
             viewBox="0 0 24 24" 
             fill="none" 
             stroke="#4a0000" 
-            strokeWidth="3"
+            strokeWidth="4"
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.1 }}
           >
             <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
-          </svg>
-        )}
-      </motion.div>
+          </motion.svg>
+        </motion.button>
+      </div>
       <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
       <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-    </motion.button>
+    </div>
   );
 }
 
@@ -184,7 +234,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-deep-black/90 backdrop-blur-md z-50"
+            className="fixed inset-0 bg-deep-black/90 backdrop-blur-sm   z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -194,7 +244,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
           {/* Modal */}
           <motion.div
-            className="fixed inset-4 md:inset-8 lg:inset-16 z-50 flex flex-col bg-deep-black border border-white/10 rounded-lg overflow-hidden"
+            className="fixed inset-4 md:inset-8 lg:inset-16 z-50 flex flex-col bg-deep-black/50 border border-white/10 rounded-lg overflow-hidden"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}

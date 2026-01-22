@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 
 interface Project {
   id: string;
@@ -29,7 +29,7 @@ const projects: Project[] = [
     id: "HAB.html",
     title: "High Altitude Balloon",
     date: "2025.07",
-    span: "default",
+    span: "tall",
     description: "A high altitude weather balloon payload to measure temperature, pressure, and humidity",
     tags: ["Arduino", "CAD", "3D Printing"],
     image: "/projects/horizon.jpg",
@@ -133,12 +133,53 @@ interface TrafficLightsProps {
   interactive?: boolean;
 }
 
+// Unified spring - snappy but heavy Porsche precision (same as dock icons)
+const MAGNETIC_SPRING = { stiffness: 350, damping: 35 };
+
 function TrafficLights({ onClick, interactive = false }: TrafficLightsProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights',message:'TrafficLights render',data:{interactive,hasOnClick:!!onClick},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
-  // #endregion
+  // Spring-based offset for magnetic tug (same as dock icons)
+  const offsetX = useSpring(0, MAGNETIC_SPRING);
+  const offsetY = useSpring(0, MAGNETIC_SPRING);
+  const magneticScale = useSpring(1, MAGNETIC_SPRING);
+  
+  // Listen for magnetic events
+  useEffect(() => {
+    const el = buttonRef.current;
+    if (!el || !interactive) return;
+    
+    const handleMove = (e: Event) => {
+      const { deltaX, deltaY } = (e as CustomEvent).detail;
+      offsetX.set(deltaX);
+      offsetY.set(deltaY);
+      magneticScale.set(1.85); // 15% more than original 1.6x
+      setIsHovered(true);
+    };
+    
+    const handleLeave = () => {
+      offsetX.set(0);
+      offsetY.set(0);
+      magneticScale.set(1);
+      setIsHovered(false);
+    };
+    
+    el.addEventListener("magnetic-move", handleMove);
+    el.addEventListener("magnetic-leave", handleLeave);
+    
+    return () => {
+      el.removeEventListener("magnetic-move", handleMove);
+      el.removeEventListener("magnetic-leave", handleLeave);
+    };
+  }, [interactive, offsetX, offsetY, magneticScale]);
+  
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Reset cursor state immediately before modal closes
+    window.dispatchEvent(new CustomEvent("cursor-reset"));
+    onClick?.();
+  };
   
   if (!interactive) {
     return (
@@ -151,50 +192,38 @@ function TrafficLights({ onClick, interactive = false }: TrafficLightsProps) {
   }
   
   return (
-    <motion.button
-      onClick={(e) => { 
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights:onClick',message:'TrafficLights clicked',data:{hasOnClick:!!onClick},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,D'})}).catch(()=>{});
-        // #endregion
-        e.stopPropagation(); 
-        onClick?.(); 
-      }}
-      onMouseEnter={() => {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights:onMouseEnter',message:'TrafficLights hover enter',data:{prevHovered:isHovered},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
-        setIsHovered(true);
-      }}
-      onMouseLeave={() => {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights:onMouseLeave',message:'TrafficLights hover leave',data:{prevHovered:isHovered},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
-        setIsHovered(false);
-      }}
-      className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded transition-colors duration-150 cursor-pointer "
-      whileTap={{ scale: 0.95 }}
-      data-cursor-default="false"
-    >
-      <motion.div 
-        className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] relative"
-        animate={{ scale: isHovered ? 1.9 : 1 }}
-        transition={{ duration: 0.15 }}
-      >
-        {isHovered && (
-          <svg 
-            className="absolute inset-0 w-full h-full p-0.5" 
+    <div className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded">
+      {/* Larger invisible hit area - acts as magnetic zone */}
+      <div className="relative -m-3 p-3" data-magnetic-zone="true">
+        {/* Red close button - magnetic target with tug effect */}
+        <motion.button
+          ref={buttonRef}
+          onClick={handleClick}
+          data-magnetic-target="true"
+          className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] cursor-pointer flex items-center justify-center relative"
+          style={{
+            x: offsetX,
+            y: offsetY,
+            scale: magneticScale,
+          }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <motion.svg 
+            className="absolute w-full h-full p-0.5" 
             viewBox="0 0 24 24" 
             fill="none" 
             stroke="#4a0000" 
-            strokeWidth="3"
+            strokeWidth="4"
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.1 }}
           >
             <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
-          </svg>
-        )}
-      </motion.div>
+          </motion.svg>
+        </motion.button>
+      </div>
       <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
       <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-    </motion.button>
+    </div>
   );
 }
 
@@ -282,7 +311,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         {/* Project Image/GIF with Zoom Effect */}
         <motion.div
           className="absolute inset-0"
-          animate={{ scale: isHovered ? 1.2 : 1 }}
+          animate={{ scale: isHovered ? 1.2 : 1 } }
           transition={{ duration: 0.6, ease: appleEase }}
         >
           <img
@@ -314,7 +343,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
           {project.tags.slice(0, 2).map((tag) => (
             <span 
               key={tag}
-              className="px-2 py-0.5 text-[9px] font-mono tracking-wider text-engineering-white/60 bg-deep-black/20 backdrop-blur-xl rounded border border-white/10 uppercase"
+              className="px-3 py-1.5 text-[9px] font-mono tracking-wider bg-deep-black/20 backdrop-blur-sm rounded border border-white/10 uppercase"
             >
               {tag}
             </span>
@@ -338,9 +367,9 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
               animate={{ opacity: isHovered ? 1 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              Click to expand →
+              Expand →
             </motion.span>
-            <span className="px-2 py-1 text-[10px] font-mono tracking-wider text-engineering-white/70  backdrop-blur-xl rounded border border-white/10">
+            <span className="px-2 py-1 text-[10px] font-mono tracking-wider text-engineering-white/70  backdrop-blur-sm rounded border border-white/10">
               {project.date}
             </span>
           </div>
@@ -383,9 +412,6 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
   }, [onClose]);
 
   const handleClose = () => {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:handleClose',message:'handleClose called',data:{},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
-    // #endregion
     setContentVisible(false);
     setTimeout(onClose, 100);
   };
@@ -412,8 +438,8 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02] shrink-0">
           <div className="flex items-center gap-4">
             <TrafficLights onClick={handleClose} interactive />
-            <span className="text-xs font-mono tracking-wider text-turbonite-base uppercase">
-              {project.id}
+            <span className="text-xs font-mono tracking-wider text-turbonite-base/70 uppercase">
+              {project.title}
             </span>
           </div>
           <div className="w-[52px]" /> {/* Spacer for layout balance */}

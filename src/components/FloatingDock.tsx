@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useSpring } from "framer-motion";
 import Lenis from "lenis";
 
 const appleEase = [0.16, 1, 0.3, 1] as const;
+
+// Snappy but heavy spring - Porsche precision
+const magneticSpring = { stiffness: 350, damping: 35 };
 
 // --- CONFIGURATION ---
 const SHADOW_COLOR = "rgba(255, 255, 255, 0.06)"; 
@@ -19,6 +22,12 @@ interface DockItemProps {
 
 function DockItem({ icon, label, href, isActive }: DockItemProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const itemRef = useRef<HTMLAnchorElement>(null);
+  
+  // Spring-based offset for magnetic tug effect
+  const offsetX = useSpring(0, magneticSpring);
+  const offsetY = useSpring(0, magneticSpring);
+  const magneticScale = useSpring(1, magneticSpring);
   
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -40,31 +49,56 @@ function DockItem({ icon, label, href, isActive }: DockItemProps) {
     }
   }, [href]);
 
+  // Listen for magnetic events from LensCursor
+  useEffect(() => {
+    const element = itemRef.current;
+    if (!element) return;
+    
+    const handleMagneticMove = (e: Event) => {
+      const { deltaX, deltaY } = (e as CustomEvent).detail;
+      offsetX.set(deltaX);
+      offsetY.set(deltaY);
+      magneticScale.set(1.15); // Slight scale up when magnetic
+    };
+    
+    const handleMagneticLeave = () => {
+      offsetX.set(0);
+      offsetY.set(0);
+      magneticScale.set(1);
+    };
+    
+    element.addEventListener("magnetic-move", handleMagneticMove);
+    element.addEventListener("magnetic-leave", handleMagneticLeave);
+    
+    return () => {
+      element.removeEventListener("magnetic-move", handleMagneticMove);
+      element.removeEventListener("magnetic-leave", handleMagneticLeave);
+    };
+  }, [offsetX, offsetY, magneticScale]);
+
   return (
     <div className="relative">
       <motion.a
+        ref={itemRef}
         href={href}
         onClick={handleClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        data-magnetic-target="true"
         className={`
           relative flex items-center justify-center w-10 h-10 sm:w-14 sm:h-14 rounded-xl cursor-pointer
           transition-colors duration-200
-          ${isActive ? "text-engineering-white" : "text-turbonite-base hover:text-engineering-white"}
+          ${isActive ? "text-engineering-white" : "text-turbonite-base hover:text-turbonite-highlight"}
         `}
-        whileHover={{ scale: 1.2, y: -2 }}
+        style={{
+          x: offsetX,
+          y: offsetY,
+          scale: magneticScale,
+        }}
         whileTap={{ scale: 0.9 }}
         transition={{ duration: 0.3, ease: appleEase }}
       >
         {icon}
-        
-        {isActive && (
-          <motion.div
-            className="absolute -bottom-1.5 sm:-bottom-2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-turbonite-highlight"
-            layoutId="activeIndicator"
-            transition={{ duration: 0.3, ease: appleEase }}
-          />
-        )}
       </motion.a>
 
       {/* Tooltip - Rendered OUTSIDE the button, above the dock */}
@@ -227,7 +261,8 @@ export default function FloatingDock() {
     >
       {/* Single morphing container */}
       <motion.div
-        className="relative backdrop-blur-md backdrop-saturate-[1.5] overflow-hidden"
+        className="relative backdrop-blur-md backdrop-saturate-[1.5] overflow-visible"
+        data-magnetic-zone="true"
         animate={{
           width: shouldBeExpanded ? expandedWidth : collapsedSize,
           height: shouldBeExpanded ? expandedHeight : collapsedSize,
@@ -246,7 +281,7 @@ export default function FloatingDock() {
       >
         {/* Inner highlight */}
         <div 
-          className="absolute inset-0 pointer-events-none rounded-[inherit]"
+          className="absolute inset-0 pointer-events-none rounded-[inherit] overflow-hidden"
           style={{ 
             background: "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%, transparent 70%, rgba(255,255,255,0.02) 100%)",
           }}
