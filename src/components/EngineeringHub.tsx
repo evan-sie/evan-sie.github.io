@@ -29,7 +29,7 @@ const projects: Project[] = [
     id: "HAB.html",
     title: "High Altitude Balloon",
     date: "2025.07",
-    span: "wide",
+    span: "default",
     description: "A high altitude weather balloon payload to measure temperature, pressure, and humidity",
     tags: ["Arduino", "CAD", "3D Printing"],
     image: "/projects/horizon.jpg",
