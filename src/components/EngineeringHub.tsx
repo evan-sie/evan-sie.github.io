@@ -46,24 +46,24 @@ const projects: Project[] = [
 - Published a technical research paper
 `
   },
-  {
-    id: "calculator",
-    title: "Calculator LiPo Battery Mod",
-    date: "2025.12",
-    span: "wide",
-    description: "Converting my old Casio calculator to take LiPo batteries instead of AAA",
-    tags: ["Soldering", "LiPo", "Modification"],
-    image: "/projects/calculator-mod.jpg",
-    gifUrl: undefined,
-    galleryImages: undefined,
-    content: `I had an old Casio FX CG50 calculator that takes AAA batteries. I found that this was quite wasteful 
-    and got expensive over the 5 years I had it. I bought a 1500mAh LiPo battery and found a charge controller (Adafruit Powerboost 500) that would ensure the LiPo stayed within 3.2V to 4.2V.
-    This was great because the charge controller also outputs 5V, which the calculator requires since it was designed to take AAA batteries.
-    I had to make room for the LiPo battery by removing the AAA battery compartment and the AAA battery holder. This required careful dremel work and measurements to make sure all the components fit.
-    There were no wiring diagrams of this calculator anywhere online, so I had to reverse engineer the PCBs by using a multimeter to measure voltages at different traces.
-    I eventually found a spot where I could solder the inputs of the powerboost to the inputs of the calculator which means I could use the calculator's built in mini-USB port to charge.
-    Finally I soldered the 5V output to the + and - terminals of the calculator where the AAA batteries used to be.`,
-  },
+  // {
+  //   id: "calculator",
+  //   title: "Calculator LiPo Battery Mod",
+  //   date: "2025.12",
+  //   span: "wide",
+  //   description: "Converting my old Casio calculator to take LiPo batteries instead of AAA",
+  //   tags: ["Soldering", "LiPo", "Modification"],
+  //   image: "/projects/calculator-mod.jpg",
+  //   gifUrl: undefined,
+  //   galleryImages: undefined,
+  //   content: `I had an old Casio FX CG50 calculator that takes AAA batteries. I found that this was quite wasteful 
+  //   and got expensive over the 5 years I had it. I bought a 1500mAh LiPo battery and found a charge controller (Adafruit Powerboost 500) that would ensure the LiPo stayed within 3.2V to 4.2V.
+  //   This was great because the charge controller also outputs 5V, which the calculator requires since it was designed to take AAA batteries.
+  //   I had to make room for the LiPo battery by removing the AAA battery compartment and the AAA battery holder. This required careful dremel work and measurements to make sure all the components fit.
+  //   There were no wiring diagrams of this calculator anywhere online, so I had to reverse engineer the PCBs by using a multimeter to measure voltages at different traces.
+  //   I eventually found a spot where I could solder the inputs of the powerboost to the inputs of the calculator which means I could use the calculator's built in mini-USB port to charge.
+  //   Finally I soldered the 5V output to the + and - terminals of the calculator where the AAA batteries used to be.`,
+  // },
 //   {
 //     id: "Mirror",
 //     title: "Smart Mirror",
@@ -126,13 +126,53 @@ const projects: Project[] = [
 ];
 
 
-function TrafficLights() {
+interface TrafficLightsProps {
+  onClick?: () => void;
+  interactive?: boolean;
+}
+
+function TrafficLights({ onClick, interactive = false }: TrafficLightsProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  if (!interactive) {
+    return (
+      <div className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded bg-[#1a1a1a]">
+        <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+      </div>
+    );
+  }
+  
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+    <motion.button
+      onClick={(e) => { e.stopPropagation(); onClick?.(); }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded transition-colors duration-150 cursor-pointer "
+      whileTap={{ scale: 0.95 }}
+      data-cursor-default="false"
+    >
+      <motion.div 
+        className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] relative"
+        animate={{ scale: isHovered ? 1.9 : 1 }}
+        transition={{ duration: 0.15 }}
+      >
+        {isHovered && (
+          <svg 
+            className="absolute inset-0 w-full h-full p-0.5" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="#4a0000" 
+            strokeWidth="3"
+          >
+            <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
+          </svg>
+        )}
+      </motion.div>
       <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
       <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-    </div>
+    </motion.button>
   );
 }
 
@@ -325,19 +365,11 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
       >
         {/* Title Bar */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02] shrink-0">
-          <TrafficLights />
+          <TrafficLights onClick={handleClose} interactive />
           <span className="text-xs tracking-wider text-engineering-white/70 uppercase font-medium font-porsche">
             {project.title}
           </span>
-          <button
-            onClick={(e) => { e.stopPropagation(); handleClose(); }}
-            className="w-[52px] flex justify-end items-center gap-2 text-turbonite-base hover:text-engineering-white transition-colors duration-150 cursor-pointer"
-          >
-            <span className="text-[9px] font-mono tracking-wider opacity-50">ESC</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M6 6l12 12M6 18L18 6" strokeLinecap="square" />
-            </svg>
-          </button>
+          <div className="w-[52px]" /> {/* Spacer for layout balance */}
         </div>
 
         {/* Expanded content */}

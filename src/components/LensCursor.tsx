@@ -46,8 +46,10 @@ export default function LensCursor() {
       const target = e.target as HTMLElement;
       const tagName = target.tagName.toLowerCase();
       
-      // Check if cursor should stay default (e.g., inside expanded modals)
-      const forceDefault = !!target.closest("[data-cursor-default]");
+      // Check for cursor overrides - find the closest ancestor with data-cursor-default
+      // data-cursor-default="false" overrides parent data-cursor-default="true"
+      const closestCursorDefault = target.closest("[data-cursor-default]") as HTMLElement | null;
+      const forceDefault = closestCursorDefault?.getAttribute("data-cursor-default") === "true";
       
       // Check for text elements (I-beam mode)
       const isTextElement = 
@@ -73,7 +75,7 @@ export default function LensCursor() {
         !!target.closest("[role='button']") ||
         target.classList.contains("cursor-pointer") ||
         !!target.closest(".cursor-pointer") ||
-        !!target.closest("article:not([data-cursor-default])") ||
+        !!target.closest("article:not([data-cursor-default='true'])") ||
         window.getComputedStyle(target).cursor === "pointer"
       );
       
