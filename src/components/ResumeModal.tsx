@@ -16,7 +16,7 @@ function TrafficLights({ onClick }: TrafficLightsProps) {
       onClick={(e) => { e.stopPropagation(); onClick?.(); }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded transition-colors duration-150 cursor-default "
+      className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded transition-colors duration-150 cursor-pointer"
       whileTap={{ scale: 0.95 }}
     >
       <motion.div 

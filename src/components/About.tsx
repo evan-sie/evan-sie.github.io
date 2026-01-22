@@ -31,13 +31,52 @@ const COURSEWORK: Course[] = [
 // COMPONENTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-function TrafficLights() {
+interface TrafficLightsProps {
+  onClick?: () => void;
+}
+
+function TrafficLights({ onClick }: TrafficLightsProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  if (!onClick) {
+    return (
+      <div className="flex items-center gap-1.5">
+        <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+      </div>
+    );
+  }
+  
   return (
-    <div className="flex items-center gap-1.5">
-      <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+    <motion.button
+      onClick={(e) => { e.stopPropagation(); onClick?.(); }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded transition-colors duration-150 cursor-pointer"
+      whileTap={{ scale: 0.95 }}
+      data-cursor-default="false"
+    >
+      <motion.div 
+        className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] relative"
+        animate={{ scale: isHovered ? 1.9 : 1 }}
+        transition={{ duration: 0.15 }}
+      >
+        {isHovered && (
+          <svg 
+            className="absolute inset-0 w-full h-full p-0.5" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="#4a0000" 
+            strokeWidth="3"
+          >
+            <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
+          </svg>
+        )}
+      </motion.div>
       <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
       <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-    </div>
+    </motion.button>
   );
 }
 
@@ -85,20 +124,14 @@ function CourseModal({ course, onClose }: CourseModalProps) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Traffic Light Header */}
-          <div className="flex items-center justify-between bg-deep-black/50 px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-            <TrafficLights />
-            <span className="text-[10px] font-mono tracking-wider text-engineering-white/50 uppercase">
-              {course.code}
-            </span>
-            <button
-              onClick={onClose}
-              className="w-[52px] flex justify-end items-center gap-2 text-turbonite-base hover:text-engineering-white transition-colors duration-150 cursor-pointer"
-            >
-              <span className="text-[9px] font-mono tracking-wider opacity-50">ESC</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M6 6l12 12M6 18L18 6" strokeLinecap="square" />
-              </svg>
-            </button>
+          <div className="flex items-center justify-between bg-deep-black/50 px-6 py-4 border-b border-white/5 bg-white/[0.02]">
+            <div className="flex items-center gap-4">
+              <TrafficLights onClick={onClose} />
+              <span className="text-xs font-mono tracking-wider text-turbonite-base/70 uppercase">
+                {course.code}
+              </span>
+            </div>
+            <div className="w-[52px]" /> {/* Spacer for layout balance */}
           </div>
 
           {/* Content */}
@@ -146,6 +179,7 @@ function CourseChip({ course, index, onClick }: CourseChipProps) {
     <motion.button
       onClick={onClick}
       className="px-3 py-1.5 text-xs font-mono tracking-wider text-engineering-white/20 bg-white/[0.05] border border-white/5 rounded hover:border-turbonite-highlight/30 hover:text-engineering-white hover:bg-white/[0.14] transition-all duration-900 cursor-pointer"
+      data-cursor-default="false"
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}

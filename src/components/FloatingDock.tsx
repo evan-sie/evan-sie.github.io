@@ -205,7 +205,7 @@ export default function FloatingDock() {
   const handleDotClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     isManuallyOpenRef.current = true;
-    setIsExpanded(true);
+      setIsExpanded(true);
   };
 
   // Dimensions based on state
@@ -253,30 +253,30 @@ export default function FloatingDock() {
         />
 
         {/* Pulsating Dot - visible when collapsed */}
-        <motion.div
+            <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
           animate={{ opacity: shouldBeExpanded ? 0 : 1 }}
           transition={{ duration: 0.2 }}
-        >
+            >
           <div className="w-3 h-3 rounded-full bg-turbonite-highlight animate-pulse shadow-[0_0_15px_rgba(140,130,121,0.6)]" />
-        </motion.div>
+      </motion.div>
 
         {/* Dock Items - visible when expanded */}
-        <motion.nav
-          className="absolute inset-0 flex items-center justify-center"
+          <motion.nav
+            className="absolute inset-0 flex items-center justify-center"
           animate={{ opacity: shouldBeExpanded ? 1 : 0 }}
           transition={{ duration: 0.2, delay: shouldBeExpanded ? 0.1 : 0 }}
-        >
+          >
           <div className="flex items-center gap-0.5 sm:gap-1 px-1 sm:px-2">
-            <DockItem icon={<HomeIcon />} label="Home" href="#hero" isActive={activeSection === "hero"} />
+              <DockItem icon={<HomeIcon />} label="Home" href="#hero" isActive={activeSection === "hero"} />
             <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
-            <DockItem icon={<AboutIcon />} label="About" href="#about" isActive={activeSection === "about"} />
+              <DockItem icon={<AboutIcon />} label="About" href="#about" isActive={activeSection === "about"} />
             <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
-            <DockItem icon={<WorksIcon />} label="Works" href="#works" isActive={activeSection === "works"} />
+              <DockItem icon={<WorksIcon />} label="Works" href="#works" isActive={activeSection === "works"} />
             <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
-            <DockItem icon={<ContactIcon />} label="Contact" href="#contact" isActive={activeSection === "contact"} />
-          </div>
-        </motion.nav>
+              <DockItem icon={<ContactIcon />} label="Contact" href="#contact" isActive={activeSection === "contact"} />
+            </div>
+          </motion.nav>
       </motion.div>
     </motion.div>
   );

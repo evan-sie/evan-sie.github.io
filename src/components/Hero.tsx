@@ -222,6 +222,7 @@ export default function Hero() {
         <motion.h1
           className="relative text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold uppercase tracking-tight text-engineering-white leading-none cursor-pointer group text-center"
           variants={itemVariants}
+          data-cursor-default="false"
           whileHover={{ 
             scale: 1.015, 
             y: -4,

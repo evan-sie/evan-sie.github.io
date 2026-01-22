@@ -26,17 +26,19 @@ const layoutTransition = {
 
 const projects: Project[] = [
   {
-    id: "High Altitude Weather Balloon",
+    id: "HAB.html",
     title: "High Altitude Balloon",
     date: "2025.07",
-    span: "tall",
+    span: "wide",
     description: "A high altitude weather balloon payload to measure temperature, pressure, and humidity",
     tags: ["Arduino", "CAD", "3D Printing"],
     image: "/projects/horizon.jpg",
     gifUrl: undefined,
     galleryImages: ["/projects/launch.mp4", "/projects/burst.mp4"],
     content: `This project was part of my involvment in AIAA's research division where 5 of us built and launched UTD's first high altitude weather balloon reaching 92,404ft (28,164m) in altitude.
-    Watch the full flight here: https://youtu.be/2wPQeWOTOIY?si=9Q7SsurK7C8yXTe6
+    Watch the full flight here: 
+
+    https://youtu.be/2wPQeWOTOIY?si=9Q7SsurK7C8yXTe6
 
 **Key Achievements:**
 - Tested electronic components to -65C
@@ -134,6 +136,10 @@ interface TrafficLightsProps {
 function TrafficLights({ onClick, interactive = false }: TrafficLightsProps) {
   const [isHovered, setIsHovered] = useState(false);
   
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights',message:'TrafficLights render',data:{interactive,hasOnClick:!!onClick},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+  // #endregion
+  
   if (!interactive) {
     return (
       <div className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded bg-[#1a1a1a]">
@@ -146,9 +152,25 @@ function TrafficLights({ onClick, interactive = false }: TrafficLightsProps) {
   
   return (
     <motion.button
-      onClick={(e) => { e.stopPropagation(); onClick?.(); }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onClick={(e) => { 
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights:onClick',message:'TrafficLights clicked',data:{hasOnClick:!!onClick},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A,D'})}).catch(()=>{});
+        // #endregion
+        e.stopPropagation(); 
+        onClick?.(); 
+      }}
+      onMouseEnter={() => {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights:onMouseEnter',message:'TrafficLights hover enter',data:{prevHovered:isHovered},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:TrafficLights:onMouseLeave',message:'TrafficLights hover leave',data:{prevHovered:isHovered},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
+        setIsHovered(false);
+      }}
       className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded transition-colors duration-150 cursor-pointer "
       whileTap={{ scale: 0.95 }}
       data-cursor-default="false"
@@ -176,6 +198,27 @@ function TrafficLights({ onClick, interactive = false }: TrafficLightsProps) {
   );
 }
 
+function CourseChip({ tag, index }: { tag: string; index: number }) {
+  return (
+    <motion.span 
+      className="px-2 py-1 text-[10px] font-mono tracking-wider text-turbonite-highlight bg-white/5 rounded border border-white/10 uppercase cursor-pointer"
+      data-cursor-default="false"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: index * 0.05, duration: 0.3, ease: appleEase }}
+      whileHover={{ 
+        backgroundColor: "rgba(140, 130, 121, 0.15)",
+        borderColor: "rgba(140, 130, 121, 0.4)",
+        color: "#F2F2F2",
+        y: -1,
+      }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {tag}
+    </motion.span>
+  );
+}
+
 interface ProjectCardProps {
   project: Project;
   onExpand: () => void;
@@ -188,8 +231,8 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
 
   const spanClasses = {
     default: "",
-    wide: "sm:col-span-2 md:col-span-2",
-    tall: "sm:row-span-2 md:row-span-2",
+    wide: "sm:col-span-3 md:col-span-3 lg:col-span-3", width: "w-full",
+    tall: "sm:row-span-2 md:row-span-2", height: "h-full",
   };
 
   // Use GIF for preview if available, otherwise use main image
@@ -239,7 +282,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         {/* Project Image/GIF with Zoom Effect */}
         <motion.div
           className="absolute inset-0"
-          animate={{ scale: isHovered ? 1.08 : 1 }}
+          animate={{ scale: isHovered ? 1.2 : 1 }}
           transition={{ duration: 0.6, ease: appleEase }}
         >
           <img
@@ -264,14 +307,14 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         </motion.div>
 
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-deep-black/60 to-deep-black/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-deep-black/20 to-deep-black/10 pointer-events-none" />
 
         {/* Tags */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
           {project.tags.slice(0, 2).map((tag) => (
             <span 
               key={tag}
-              className="px-2 py-0.5 text-[9px] font-mono tracking-wider text-engineering-white/1 bg-deep-black/60 backdrop-blur-sm rounded border border-white/10 uppercase"
+              className="px-2 py-0.5 text-[9px] font-mono tracking-wider text-engineering-white/60 bg-deep-black/20 backdrop-blur-xl rounded border border-white/10 uppercase"
             >
               {tag}
             </span>
@@ -291,13 +334,13 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
           </p>
           <div className="flex items-center justify-between">
             <motion.span 
-              className="text-[10px] font-mono tracking-wider text-turbonite-highlight/70 uppercase"
+              className="text-[12px] font-mono tracking-wider text-turbonite-highlight/70 uppercase"
               animate={{ opacity: isHovered ? 1 : 0 }}
               transition={{ duration: 0.2 }}
             >
               Click to expand →
             </motion.span>
-            <span className="px-2 py-1 text-[10px] font-mono tracking-wider text-engineering-white/70 bg-deep-black/60 backdrop-blur-sm rounded border border-white/10">
+            <span className="px-2 py-1 text-[10px] font-mono tracking-wider text-engineering-white/70  backdrop-blur-xl rounded border border-white/10">
               {project.date}
             </span>
           </div>
@@ -340,6 +383,9 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
   }, [onClose]);
 
   const handleClose = () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/a778414a-2499-4b15-8f5b-a13326ec8d0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EngineeringHub.tsx:handleClose',message:'handleClose called',data:{},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     setContentVisible(false);
     setTimeout(onClose, 100);
   };
@@ -361,14 +407,15 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         className="fixed inset-4 md:inset-12 lg:inset-24 z-50 flex flex-col bg-deep-black/20 border border-white/10 rounded-lg overflow-hidden font-porsche"
         layoutId={`project-${project.id}`}
         transition={layoutTransition}
-        data-cursor-default="true"
       >
-        {/* Title Bar */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02] shrink-0">
-          <TrafficLights onClick={handleClose} interactive />
-          <span className="text-xs tracking-wider text-engineering-white/70 uppercase font-medium font-porsche">
-            {project.title}
-          </span>
+        {/* Title Bar - matches Resume modal styling */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02] shrink-0">
+          <div className="flex items-center gap-4">
+            <TrafficLights onClick={handleClose} interactive />
+            <span className="text-xs font-mono tracking-wider text-turbonite-base uppercase">
+              {project.id}
+            </span>
+          </div>
           <div className="w-[52px]" /> {/* Spacer for layout balance */}
         </div>
 
@@ -381,11 +428,11 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 h-full lg:h-auto">
             {/* Left - Main Image */}
-            <div className="relative min-h-[300px] lg:min-h-full lg:sticky lg:top-0 border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden">
+            <div className="relative min-h-[300px] lg:min-h-full lg:sticky lg:top-0 border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden cursor-pointer">
               <img
                 src={project.image}
                 alt={project.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover "
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
@@ -403,11 +450,11 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                 }}
               />
               
-              <div className="absolute inset-0 bg-gradient-to-t from-deep-black/40 via-transparent to-deep-black/20 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-transparent to-deep-black/20 pointer-events-none" />
               
               {/* Grid pattern overlay */}
               <div 
-                className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                className="absolute inset-0 opacity-[0.015] cursor-pointer "
                 style={{
                   backgroundImage: `
                     linear-gradient(to right, rgba(242, 242, 242, 1) 1px, transparent 1px),
@@ -422,16 +469,11 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
             <div className="p-6 md:p-8 lg:p-10 lg:h-full lg:overflow-y-auto lg:min-h-0">
               <div className="mb-8">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  {project.tags.map((tag) => (
-                    <span 
-                      key={tag}
-                      className="px-2 py-1 text-[10px] font-mono tracking-wider text-turbonite-highlight bg-white/5 rounded border border-white/10 uppercase"
-                    >
-                      {tag}
-                    </span>
+                  {project.tags.map((tag, index) => (
+                    <CourseChip key={tag} tag={tag} index={index} />
                   ))}
                 </div>
-                <h2 className="text-2xl md:text-3xl font-porsche tracking-tight text-engineering-white uppercase mb-2">
+                <h2 className="text-2xl md:text-3xl font-porsche tracking-tight text-engineering-white uppercase mb-2 text-left">
                   {project.title}
                 </h2>
                 <p className="text-sm font-thin text-engineering-white leading-relaxed">

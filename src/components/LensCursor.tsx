@@ -47,12 +47,13 @@ export default function LensCursor() {
       const tagName = target.tagName.toLowerCase();
       
       // Check for cursor overrides - find the closest ancestor with data-cursor-default
-      // data-cursor-default="false" overrides parent data-cursor-default="true"
+      // data-cursor-default="false" overrides parent data-cursor-default="true" and forces pointer mode
       const closestCursorDefault = target.closest("[data-cursor-default]") as HTMLElement | null;
       const forceDefault = closestCursorDefault?.getAttribute("data-cursor-default") === "true";
+      const forcePointer = target.getAttribute("data-cursor-default") === "false" || closestCursorDefault?.getAttribute("data-cursor-default") === "false";
       
-      // Check for text elements (I-beam mode)
-      const isTextElement = 
+      // Check for text elements (I-beam mode) - but skip if element explicitly wants pointer mode
+      const isTextElement = !forcePointer && (
         tagName === "p" ||
         tagName === "span" ||
         tagName === "h1" ||
@@ -64,27 +65,34 @@ export default function LensCursor() {
         tagName === "input" ||
         tagName === "textarea" ||
         tagName === "label" ||
-        tagName === "li";
+        tagName === "li" ||
+        target.classList.contains("prose") ||
+        !!target.closest(".prose")
+      );
       
-      // Check for clickable elements (but not if inside a cursor-default zone)
+      // Check if inside a fixed modal (which should not inherit parent cursor-pointer)
+      const isInsideModal = !!target.closest(".fixed");
+      
+      // Check for clickable elements
+      // Inside modals: only direct clickable elements (not inherited from closed cards)
+      // Outside modals: include cursor-pointer class inheritance
       const isClickable = !forceDefault && (
+        forcePointer ||
         tagName === "a" ||
         tagName === "button" ||
         !!target.closest("a") ||
         !!target.closest("button") ||
         !!target.closest("[role='button']") ||
         target.classList.contains("cursor-pointer") ||
-        !!target.closest(".cursor-pointer") ||
-        !!target.closest("article:not([data-cursor-default='true'])") ||
+        (!isInsideModal && !!target.closest(".cursor-pointer")) ||
+        (!isInsideModal && !!target.closest("article.cursor-pointer")) ||
         window.getComputedStyle(target).cursor === "pointer"
       );
       
-      // Determine mode priority: clickable > text > default
-      if (forceDefault) {
-        setMode("default");
-      } else if (isClickable) {
+      // Determine mode priority: clickable (including forcePointer) > text > default
+      if (isClickable) {
         setMode("pointer");
-      } else if (isTextElement && !isClickable) {
+      } else if (isTextElement) {
         setMode("text");
       } else {
         setMode("default");

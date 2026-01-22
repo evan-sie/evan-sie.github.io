@@ -90,7 +90,7 @@ export default function BackgroundCanvas() {
           right: "-5%",
           width: "45vw",
           height: "45vh",
-          background: "radial-gradient(ellipse at center, rgba(140, 130, 121, 0.15) 0%, transparent 55%)",
+          background: "radial-gradient(ellipse at center, rgba(140, 130, 121, 0.15) 0%, transparent 30%)",
           filter: "blur(60px)",
           transform: `translate3d(0, ${blob3Y}%, 0)`,
           opacity: aboutOpacity,
@@ -133,7 +133,7 @@ export default function BackgroundCanvas() {
           left: "0%",
           width: "100vw",
           height: "45vh",
-          background: "radial-gradient(ellipse 100% 60% at 50% 100%, rgba(140, 130, 121, 0.28) 0%, transparent 90%)",
+          background: "radial-gradient(ellipse 100% 60% at 50% 100%, rgba(140, 130, 121, 0.42) 0%, transparent 100%)",
           filter: "blur(60px)",
           opacity: contactOpacity,
         }}
