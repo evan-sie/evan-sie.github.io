@@ -3,8 +3,15 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Lenis from "lenis";
+import TextScramble from "./TextScramble";
 
 const appleEase = [0.16, 1, 0.3, 1] as const;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TEXT SCRAMBLE CONFIG - Timing for the decode effect
+// ═══════════════════════════════════════════════════════════════════════════
+const SCRAMBLE_DELAY = 1000; // ms - starts slightly before fade-in so scramble is active during reveal
+const SCRAMBLE_DURATION = 2200; // ms - total decode duration
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MOBILE TEXT POSITION CONFIG - Adjust this to move hero text on mobile
@@ -92,6 +99,7 @@ export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const [spotlightPos, setSpotlightPos] = useState({ x: 0.5, y: 0.5 });
   const [isMobile, setIsMobile] = useState(false);
+  const [isScrambleComplete, setIsScrambleComplete] = useState(false);
   const lastUpdate = useRef(0);
 
   // Detect mobile
@@ -220,16 +228,18 @@ export default function Hero() {
         </motion.p>
 
         <motion.h1
-          className="relative text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold uppercase tracking-tight text-engineering-white leading-none cursor-pointer group text-center"
+          className={`relative text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold uppercase tracking-tight text-engineering-white leading-none group text-center ${
+            isScrambleComplete ? "cursor-pointer" : "pointer-events-none"
+          }`}
           variants={itemVariants}
-          data-cursor-default="false"
-          whileHover={{ 
+          data-cursor-default={isScrambleComplete ? "false" : "true"}
+          whileHover={isScrambleComplete ? { 
             scale: 1.015, 
             y: -4,
             opacity: 0.2,
-          }}
+          } : undefined}
           transition={{ duration: 0.4, ease: appleEase }}
-          onClick={() => {
+          onClick={isScrambleComplete ? () => {
             const aboutSection = document.getElementById("about");
             if (aboutSection) {
               const lenis = (window as unknown as { lenis?: Lenis }).lenis;
@@ -242,16 +252,23 @@ export default function Hero() {
                 aboutSection.scrollIntoView({ behavior: "smooth" });
               }
             }
-          }}
+          } : undefined}
         >
-          {/* Subtle hover glow effect */}
-          <span
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-            aria-hidden="true"
-          />
-          {/* Text as single unit */}
+          {/* Subtle hover glow effect - only when interactive */}
+          {isScrambleComplete && (
+            <span
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              aria-hidden="true"
+            />
+          )}
+          {/* Text with scramble decode effect */}
           <span className="relative inline-block">
-            Evan Sie
+            <TextScramble 
+              text="Evan Sie"
+              delay={SCRAMBLE_DELAY}
+              duration={SCRAMBLE_DURATION}
+              onComplete={() => setIsScrambleComplete(true)}
+            />
           </span>
         </motion.h1>
 

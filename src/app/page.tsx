@@ -37,7 +37,11 @@ export default function Home() {
         {/* Hero is z-10 internally so plane flies over it */}
         <Hero />
         <About />
+        {/* Large spacer for dramatic pause before quote */}
+        <div className="h-[128rem] md:h-[96rem]" aria-hidden="true" />
         <FlyingQuote />
+        {/* Spacer after quote - before engineering */}
+        <div className="h-[48rem] md:h-[64rem]" aria-hidden="true" />
         <EngineeringHub />
         <Contact />
       </main>

@@ -34,7 +34,7 @@ const AFTERBURNER = {
   // Flicker animation parameters
   flickerSpeed: 42,           // Base frequency
   flickerIntensity: 0.02,     // Opacity variation range
-  baseOpacity: 0.001,
+  baseOpacity: 0.01,
 };
 
 // ENGINE NACELLE OUTLINES
@@ -93,20 +93,21 @@ const ANIMATION = {
 // Desktop camera keyframes
 const CAMERA_KEYFRAMES_DESKTOP = [
   { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 1, -2],    label: "Hero" },
-  { scroll: 0.23, pos: [-4, 4, -8],    target: [1, 1.5, -4],    label: "About" },
-  { scroll: 0.28, pos: [-4, 4, -8],    target: [1, 1.5, -4],  label: "About" },
-  { scroll: 0.4,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
-  { scroll: 0.786453,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  { scroll: 0.13, pos: [-4, 4, -8],    target: [1, 1.5, -4],    label: "About" },
+  // { scroll: 0.24, pos: [-4, 4, -5],    target: [1, 1.5, 0],  label: "About" },
+  // { scroll: 0.39, pos: [-9, 3, -4],    target: [1, 1.5, -4],  label: "About" },
+  { scroll: 0.57,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  // { scroll: 0.7,  pos: [-3, 2, 9],     target: [1.0, 1, -6],  label: "Engineering" },
   { scroll: 1.0,  pos: [-2, -3, 11],   target: [-3.5, 5, -9],    label: "Contact" },
 ];
 
 // Mobile camera keyframes - centered SR-71 on contact page
 const CAMERA_KEYFRAMES_MOBILE = [
   { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 3, -2],    label: "Hero" },
-  { scroll: 0.23, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
-  { scroll: 0.28, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
-  { scroll: 0.4,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
-  { scroll: 0.786453,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  { scroll: 0.13, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
+  // { scroll: 0, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
+  { scroll: 0.67,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  // { scroll: 0.786453,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
   // Mobile contact: SR-71 centered, viewed from below
   { scroll: 1.0,  pos: [0, 4, 12],    target: [0, 10, -3],    label: "Contact" },
 ];
