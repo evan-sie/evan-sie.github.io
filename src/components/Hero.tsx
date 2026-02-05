@@ -82,15 +82,9 @@ function ScrollIndicator() {
       animate={{ opacity: 1 }}
       transition={{ delay: 2.5, duration: 0.8, ease: appleEase }}
     >
-      <span className="text-[15px] font-mono tracking-[0.25em] text-turbonite-base/40 uppercase mb-3">
+      <span className="text-[15px] font-mono tracking-[0.25em] text-turbonite-base/40 uppercase py-8">
         Scroll
       </span>
-      <motion.div
-        className="w-px bg-turbonite-highlight/40"
-        initial={{ height: 1 }}
-        animate={{ height: expanded ? 50 : 1 }}
-        transition={{ duration: 1, ease: appleEase }}
-      />
     </motion.div>
   );
 }
@@ -169,7 +163,7 @@ export default function Hero() {
               <path 
                 d="M 60 0 L 0 0 0 60" 
                 fill="none" 
-                stroke="rgba(242, 242, 242, 0.035)" 
+                stroke="rgba(242, 242, 242, 0.015)" 
                 strokeWidth="1"
               />
             </pattern>

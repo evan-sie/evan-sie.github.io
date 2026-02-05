@@ -70,7 +70,7 @@ export default function BackgroundCanvas() {
       />
 
       {/* ABOUT GRADIENTS */}
-      <div
+      {/* <div
         className="absolute transform-gpu"
         style={{
           top: "20%",
@@ -81,8 +81,8 @@ export default function BackgroundCanvas() {
           filter: "blur(60px)",
           transform: `translate3d(0, ${blob2Y}%, 0)`,
           opacity: aboutOpacity,
-        }}
-      />
+        }} */}
+      {/* />
       <div
         className="absolute transform-gpu"
         style={{
@@ -95,34 +95,34 @@ export default function BackgroundCanvas() {
           transform: `translate3d(0, ${blob3Y}%, 0)`,
           opacity: aboutOpacity,
         }}
-      />
+      /> */}
 
       {/* WORKS GRADIENTS */}
       <div
-        className="absolute transform-gpu"
-        style={{
-          top: "40%",
-          left: "15%",
-          width: "60vw",
-          height: "50vh",
-          background: "radial-gradient(ellipse at center, rgba(78, 79, 80, 0.30) 0%, transparent 90%)",
-          filter: "blur(60px)",
-          transform: `translate3d(0, ${blob1Y}%, 0)`,
-          opacity: worksOpacity,
-        }}
-      />
-      <div
-        className="absolute transform-gpu"
-        style={{
-          top: "50%",
-          right: "10%",
-          width: "35vw",
-          height: "40vh",
-          background: "radial-gradient(ellipse at center, rgba(140, 130, 121, 0.18) 0%, transparent 55%)",
-          filter: "blur(60px)",
-          transform: `translate3d(0, ${blob2Y * 0.7}%, 0)`,
-          opacity: worksOpacity,
-        }}
+      //   className="absolute transform-gpu"
+      //   style={{
+      //     top: "40%",
+      //     left: "15%",
+      //     width: "60vw",
+      //     height: "50vh",
+      //     background: "radial-gradient(ellipse at center, rgba(78, 79, 80, 0.30) 0%, transparent 90%)",
+      //     filter: "blur(60px)",
+      //     transform: `translate3d(0, ${blob1Y}%, 0)`,
+      //     opacity: worksOpacity,
+      //   }}
+      // />
+      // <div
+      //   className="absolute transform-gpu"
+      //   style={{
+      //     top: "50%",
+      //     right: "10%",
+      //     width: "35vw",
+      //     height: "40vh",
+      //     background: "radial-gradient(ellipse at center, rgba(140, 130, 121, 0.18) 0%, transparent 55%)",
+      //     filter: "blur(60px)",
+      //     transform: `translate3d(0, ${blob2Y * 0.7}%, 0)`,
+      //     opacity: worksOpacity,
+      //   }}
       />
 
       {/* CONTACT GRADIENTS */}

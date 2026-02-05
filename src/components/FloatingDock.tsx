@@ -112,7 +112,7 @@ function DockItem({ icon, label, href, isActive }: DockItemProps) {
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15, ease: appleEase }}
           >
-            <div className="px-4 py-2 bg-deep-black/95 backdrop-blur-sm border border-white/10 rounded-lg whitespace-nowrap shadow-lg">
+            <div className="px-4 py-2 bg-deep-black/95 backdrop-blur-xl border border-white/10 rounded-lg whitespace-nowrap shadow-lg">
               <span className="text-[10px] tracking-wider uppercase font-mono text-engineering-white">
                 {label}
               </span>
@@ -261,7 +261,7 @@ export default function FloatingDock() {
     >
       {/* Single morphing container */}
       <motion.div
-        className="relative backdrop-blur-md backdrop-saturate-[1.5] overflow-visible"
+        className={`relative overflow-visible ${shouldBeExpanded ? "backdrop-blur-sm backdrop-saturate-[1.5]" : ""}`}
         data-magnetic-zone="true"
         animate={{
           width: shouldBeExpanded ? expandedWidth : collapsedSize,
@@ -270,22 +270,24 @@ export default function FloatingDock() {
         }}
         transition={{ duration: 0.3, ease: appleEase }}
         style={{
-          backgroundColor: shouldBeExpanded ? "rgba(5, 5, 5, 0.2)" : "rgba(5, 5, 5, 0.5)", 
-          border: "1px solid rgba(255, 255, 255, 0.12)",
-          boxShadow: `${SHADOW_INTENSITY} ${SHADOW_COLOR}`,
+          backgroundColor: shouldBeExpanded ? "rgba(5, 5, 5, 0.15)" : "transparent", 
+          border: shouldBeExpanded ? "1px solid rgba(255, 255, 255, 0.08)" : "none",
+          // boxShadow: `${SHADOW_INTENSITY} ${SHADOW_COLOR}`,
           cursor: shouldBeExpanded ? "default" : "pointer",
         }}
         onClick={!shouldBeExpanded ? handleDotClick : undefined}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
-        {/* Inner highlight */}
-        <div 
-          className="absolute inset-0 pointer-events-none rounded-[inherit] overflow-hidden"
-          style={{ 
-            background: "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%, transparent 70%, rgba(255,255,255,0.02) 100%)",
-          }}
-        />
+        {/* Inner highlight - liquid glass effect - only when expanded */}
+        {shouldBeExpanded && (
+          <div 
+            className="absolute inset-0 pointer-events-none rounded-[inherit] overflow-hidden"
+            style={{ 
+              background: "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 50%, transparent 90%, rgba(255,255,255,0.01) 100%)",
+            }}
+          />
+        )}
 
         {/* Pulsating Dot - visible when collapsed */}
             <motion.div
@@ -293,7 +295,7 @@ export default function FloatingDock() {
           animate={{ opacity: shouldBeExpanded ? 0 : 1 }}
           transition={{ duration: 0.2 }}
             >
-          <div className="w-3 h-3 rounded-full bg-turbonite-highlight animate-pulse shadow-[0_0_15px_rgba(140,130,121,0.6)]" />
+          <div className="w-3 h-3 rounded-full bg-turbonite-highlight animate-pulse" />
       </motion.div>
 
         {/* Dock Items - visible when expanded */}
