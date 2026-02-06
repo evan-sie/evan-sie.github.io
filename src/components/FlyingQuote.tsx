@@ -14,8 +14,8 @@ export default function FlyingQuote() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.06,
-        delayChildren: 0.2,
+        staggerChildren: 0.03,  // Faster stagger (was 0.06)
+        delayChildren: 0.1,     // Faster initial delay (was 0.2)
       },
     },
   };
@@ -31,7 +31,7 @@ export default function FlyingQuote() {
       y: 0,
       filter: "blur(0px)",
       transition: {
-        duration: 0.6,
+        duration: 0.35,  // Faster animation (was 0.6)
         ease: appleEase,
       },
     },
@@ -45,7 +45,7 @@ export default function FlyingQuote() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 2, ease: appleEase }}
+        transition={{ duration: 1, ease: appleEase }}
       >
         <div 
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full"
@@ -63,7 +63,7 @@ export default function FlyingQuote() {
           initial={{ opacity: 0, scale: 0.5 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: appleEase }}
+          transition={{ duration: 0.4, ease: appleEase }}
         >
           &ldquo;
         </motion.span>
@@ -93,7 +93,7 @@ export default function FlyingQuote() {
           initial={{ opacity: 0, scale: 0.5 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ delay: 1.2, duration: 0.8, ease: appleEase }}
+          transition={{ delay: 0.6, duration: 0.5, ease: appleEase }}
         >
           &rdquo;
         </motion.span>
@@ -104,7 +104,7 @@ export default function FlyingQuote() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 1.5, duration: 0.8, ease: appleEase }}
+          transition={{ delay: 0.7, duration: 0.5, ease: appleEase }}
         >
           <div className="w-8 h-px bg-turbonite-highlight/30" />
           <cite className="text-xs font-mono tracking-[0.25em] text-turbonite-highlight/50 uppercase not-italic">

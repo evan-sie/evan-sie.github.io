@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Lenis from "lenis";
 import TextScramble from "./TextScramble";
@@ -91,10 +91,8 @@ function ScrollIndicator() {
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
-  const [spotlightPos, setSpotlightPos] = useState({ x: 0.5, y: 0.5 });
   const [isMobile, setIsMobile] = useState(false);
   const [isScrambleComplete, setIsScrambleComplete] = useState(false);
-  const lastUpdate = useRef(0);
 
   // Detect mobile
   useEffect(() => {
@@ -107,24 +105,6 @@ export default function Hero() {
   const { scrollY } = useScroll();
   const titleY = useTransform(scrollY, [0, 800], [0, 200]);
   const titleOpacity = useTransform(scrollY, [0, 500], [1, 0]);
-
-  // Throttled mouse move for spotlight - 30fps is enough for smooth effect
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    const now = Date.now();
-    if (now - lastUpdate.current < 33) return; // ~30fps throttle
-    lastUpdate.current = now;
-
-    if (!heroRef.current) return;
-    const rect = heroRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    setSpotlightPos({ x, y });
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -171,15 +151,6 @@ export default function Hero() {
           <rect width="100%" height="100%" fill="url(#hero-grid)" />
         </svg>
       </div>
-
-      {/* Spotlight effect - z-[1] */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-[1] transform-gpu"
-        style={{
-          background: `radial-gradient(circle 600px at ${spotlightPos.x * 100}% ${spotlightPos.y * 100}%, rgba(140, 130, 121, 0.1), transparent 60%)`,
-          transition: "background 0.15s ease-out",
-        }}
-      />
 
       {/* Technical data points - z-[5] */}
       <TechnicalDataPoint position="top-left" label="" value="   // DALLAS, TX" />

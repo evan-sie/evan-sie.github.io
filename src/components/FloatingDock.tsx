@@ -112,13 +112,13 @@ function DockItem({ icon, label, href, isActive }: DockItemProps) {
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15, ease: appleEase }}
           >
-            <div className="px-4 py-2 bg-deep-black/95 backdrop-blur-xl border border-white/10 rounded-lg whitespace-nowrap shadow-lg">
+            <div className="px-4 py-1.5  bg-deep-black/50 backdrop-blur-xl border border-white/5 rounded-xl whitespace-nowrap shadow-lg">
               <span className="text-[10px] tracking-wider uppercase font-mono text-engineering-white">
                 {label}
               </span>
             </div>
             {/* Arrow pointing down */}
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-deep-black/95 border-r border-b border-white/10 rotate-45" />
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 backdrop-blur-xl border-r border-b border-white/10 rotate-45" />
           </motion.div>
         )}
       </AnimatePresence>

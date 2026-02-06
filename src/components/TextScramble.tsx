@@ -11,7 +11,7 @@ const CHARS = "—–_/\|·*EVANSIE+";
 
 // Easing function: Cubic ease-out for natural deceleration
 // Returns 0-1, starts fast, decelerates smoothly
-const easeOutCubic = (t: number): number => 1 - 2.5*Math.pow(1 - t, 1);
+const easeOutCubic = (t: number): number => 1 - 2*Math.pow(1 - t, 1);
 
 // Easing function for velocity (derivative of ease-out)
 // Higher at start, approaches 0 at end
@@ -35,7 +35,7 @@ interface TextScrambleProps {
 export default function TextScramble({
   text,
   delay = 0,
-  duration = 1500,
+  duration = 2000,
   className = "",
   onComplete,
 }: TextScrambleProps) {
@@ -43,7 +43,7 @@ export default function TextScramble({
   const [display, setDisplay] = useState<CharState[]>(() =>
     text.split("").map((c) => ({
       char: c,
-      weight: 300,
+      weight: 100,
       locked: true,
       isGlimpse: false,
     }))
@@ -175,21 +175,27 @@ export default function TextScramble({
   }, [hasMounted, text, delay, duration]);
 
   return (
-    <span className={`inline-block font-porsche ${className}`} style={{ opacity }} aria-label={text}>
-      {display.map((state, i) => (
-        <span
-          key={i}
-          className="inline-block transition-[font-weight] duration-75"
-          style={{
-            fontWeight: state.weight,
-            minWidth: state.char === " " ? "0.35em" : undefined,
-            // Subtle brightness boost on glimpse for "recognition" moment
-            filter: state.isGlimpse ? "brightness(1.1)" : undefined,
-          }}
-        >
-          {state.char === " " ? "\u00A0" : state.char}
-        </span>
-      ))}
+    <span className={`inline-block font-porsche ${className}`} aria-label={text}>
+      {display.map((state, i) => {
+        // Scrambled letters have much lower opacity than locked letters
+        const charOpacity = state.locked ? opacity : opacity * 0.15; // Scrambled = 20% of locked opacity
+        
+        return (
+          <span
+            key={i}
+            className="inline-block transition-[font-weight,opacity] duration-75"
+            style={{
+              fontWeight: state.weight,
+              opacity: charOpacity,
+              minWidth: state.char === " " ? "0.35em" : undefined,
+              // Subtle brightness boost on glimpse for "recognition" moment
+              filter: state.isGlimpse ? "brightness(1.1)" : undefined,
+            }}
+          >
+            {state.char === " " ? "\u00A0" : state.char}
+          </span>
+        );
+      })}
     </span>
   );
 }
