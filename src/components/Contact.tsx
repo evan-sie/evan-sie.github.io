@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useState, useRef } from "react";
+import { motion } from "framer-motion";
 import ResumeModal from "./ResumeModal";
-
-const appleEase = [0.16, 1, 0.3, 1] as const;
+import { appleEase } from "@/lib/constants";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // POSITION CONFIGURATION - Adjust these to reposition the Contact section
@@ -18,15 +16,6 @@ const POSITION_CONFIG = {
 export default function Contact() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
-
-  // Deep parallax for header
-  const headerY = useTransform(scrollYProgress, [0, 1], [120, -60]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [40, -20]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -54,9 +43,9 @@ export default function Contact() {
 
   return (
     <>
-      <section 
+      <section
         ref={sectionRef}
-        id="contact" 
+        id="contact"
         className="relative min-h-screen flex items-center py-20 px-4 sm:px-8 md:px-20 sm:py-32"
       >
         {/* Subtle border accent - moved to left */}
@@ -73,21 +62,19 @@ export default function Contact() {
             y: POSITION_CONFIG.y,
           }}
         >
-        {/* Section label with parallax */}
-        <motion.p
-          className="text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-highlight uppercase mb-6 sm:mb-8"
-          variants={itemVariants}
-          style={{ y: headerY }}
-        >
-          
-        </motion.p>
+          {/* Section label with parallax */}
+          <motion.p
+            className="text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-highlight uppercase mb-6 sm:mb-8"
+            variants={itemVariants}
+          >
 
-        {/* Heading */}
-        <motion.h2
-          className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-engineering-white mb-6 sm:mb-8"
-          variants={itemVariants}
-          style={{ y: contentY }}
-        >
+          </motion.p>
+
+          {/* Heading */}
+          <motion.h2
+            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-engineering-white mb-6 sm:mb-8"
+            variants={itemVariants}
+          >
             Thanks for stopping by!
           </motion.h2>
 
@@ -98,7 +85,7 @@ export default function Contact() {
           />
 
           {/* Description */}
-          <motion.p 
+          <motion.p
             className="font-porsche text-turbonite-highlight text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mb-8 sm:mb-12"
             variants={itemVariants}
           >
@@ -133,12 +120,12 @@ export default function Contact() {
               whileHover={{ y: -2 }}
               transition={{ duration: 0.2 }}
             >
-              <svg 
-                className="w-4 h-4" 
-                fill="currentColor" 
+              <svg
+                className="w-4 h-4"
+                fill="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
               </svg>
               LinkedIn
             </motion.a>
@@ -149,51 +136,43 @@ export default function Contact() {
               whileHover={{ y: -2 }}
               transition={{ duration: 0.2 }}
             >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
                 className="w-4 h-4"
               >
-                <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/>
-                <path d="M14 2v5a1 1 0 0 0 1 1h5"/>
-                <path d="M16 22a4 4 0 0 0-8 0"/>
-                <circle cx="12" cy="15" r="3"/>
+                <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+                <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+                <path d="M16 22a4 4 0 0 0-8 0" />
+                <circle cx="12" cy="15" r="3" />
               </svg>
               Resume
             </motion.button>
           </motion.div>
 
-          
-          <motion.div 
+
+          <motion.div
             className="mt-20 sm:mt-32 pt-8 sm:pt-12 border-t border-white/5"
             variants={itemVariants}
           >
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-              <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] text-turbonite-base/40 uppercase">
-                
-              </p>
-              <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] text-turbonite-base/40 uppercase">
-                
-              </p>
-              <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] text-turbonite-base/40 uppercase">
-                
-              </p>
-            </div>
+            <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.15em] sm:tracking-[0.2em] text-turbonite-base/40 uppercase text-center">
+              © {new Date().getFullYear()} Evan Sie
+            </p>
           </motion.div>
         </motion.div>
       </section>
 
       {/* Resume Modal */}
-      <ResumeModal 
-        isOpen={isResumeOpen} 
-        onClose={() => setIsResumeOpen(false)} 
+      <ResumeModal
+        isOpen={isResumeOpen}
+        onClose={() => setIsResumeOpen(false)}
       />
     </>
   );

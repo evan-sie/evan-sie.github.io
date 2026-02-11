@@ -1,10 +1,10 @@
-import { 
-  Hero, 
+import {
+  Hero,
   About,
   FlyingQuote,
-  EngineeringHub, 
-  Contact, 
-  BackgroundCanvas, 
+  EngineeringHub,
+  Contact,
+  BackgroundCanvas,
   FloatingDock,
   AeroWireframe
 } from "@/components";
@@ -37,10 +37,10 @@ export default function Home() {
         {/* Hero is z-10 internally so plane flies over it */}
         <Hero />
         <About />
-        {/* Large spacer for dramatic pause before quote */}
+        {/* Spacer — dramatic pause before quote (BackgroundCanvas provides atmosphere) */}
         <div className="h-[128rem] md:h-[96rem]" aria-hidden="true" />
         <FlyingQuote />
-        {/* Spacer after quote - before engineering */}
+        {/* Spacer — before engineering showcase */}
         <div className="h-[48rem] md:h-[64rem]" aria-hidden="true" />
         <EngineeringHub />
         <Contact />

@@ -4,8 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Lenis from "lenis";
 import TextScramble from "./TextScramble";
-
-const appleEase = [0.16, 1, 0.3, 1] as const;
+import { appleEase } from "@/lib/constants";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TEXT SCRAMBLE CONFIG - Timing for the decode effect
@@ -18,11 +17,11 @@ const SCRAMBLE_DURATION = 2200; // ms - total decode duration
 // ═══════════════════════════════════════════════════════════════════════════
 const MOBILE_TEXT_OFFSET_Y = -130; // Negative = up, Positive = down (in pixels)
 
-function TechnicalDataPoint({ 
-  position, 
-  label, 
-  value 
-}: { 
+function TechnicalDataPoint({
+  position,
+  label,
+  value
+}: {
   position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
   label: string;
   value: string;
@@ -35,7 +34,7 @@ function TechnicalDataPoint({
   };
 
   return (
-    <motion.div 
+    <motion.div
       className={`absolute ${positionClasses[position]} font-mono text-[10px] text-turbonite-base/40 uppercase tracking-wider z-[5]`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -56,7 +55,7 @@ function Crosshair({ position }: { position: "top-left" | "top-right" | "bottom-
   };
 
   return (
-    <motion.div 
+    <motion.div
       className={`absolute ${positionClasses[position]} text-turbonite-base/15 font-mono text-lg z-[5]`}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -130,9 +129,9 @@ export default function Hero() {
   };
 
   return (
-    <section 
+    <section
       ref={heroRef}
-      id="hero" 
+      id="hero"
       className="relative h-screen flex items-center justify-center overflow-hidden bg-transparent"
     >
       {/* SVG Grid Background - z-0 */}
@@ -140,10 +139,10 @@ export default function Hero() {
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path 
-                d="M 60 0 L 0 0 0 60" 
-                fill="none" 
-                stroke="rgba(242, 242, 242, 0.015)" 
+              <path
+                d="M 60 0 L 0 0 0 60"
+                fill="none"
+                stroke="rgba(242, 242, 242, 0.015)"
                 strokeWidth="1"
               />
             </pattern>
@@ -169,9 +168,9 @@ export default function Hero() {
 
       {/* Main Typography - z-10 (plane at z-20 flies OVER this) */}
       {/* Wrapper for mobile vertical offset */}
-      <div 
+      <div
         className="relative z-10 w-full flex flex-col items-center justify-center"
-        style={{ 
+        style={{
           transform: `translateY(${isMobile ? MOBILE_TEXT_OFFSET_Y : 0}px)`,
         }}
       >
@@ -180,69 +179,68 @@ export default function Hero() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          style={{ 
-            y: titleY, 
+          style={{
+            y: titleY,
             opacity: titleOpacity,
           }}
         >
-        <motion.p
-          className="text-[10px] sm:text-xs md:text-sm tracking-[0.3em] sm:tracking-[0.4em] text-turbonite-highlight uppercase mb-4 sm:mb-6 md:mb-8 font-mono text-center"
-          variants={itemVariants}
-        >
-          B.S. Mechanical Engineering
-        </motion.p>
+          <motion.p
+            className="text-[10px] sm:text-xs md:text-sm tracking-[0.3em] sm:tracking-[0.4em] text-turbonite-highlight uppercase mb-4 sm:mb-6 md:mb-8 font-mono text-center"
+            variants={itemVariants}
+          >
+            B.S. Mechanical Engineering
+          </motion.p>
 
-        <motion.h1
-          className={`relative text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold uppercase tracking-tight text-engineering-white leading-none group text-center ${
-            isScrambleComplete ? "cursor-pointer" : "pointer-events-none"
-          }`}
-          variants={itemVariants}
-          data-cursor-default={isScrambleComplete ? "false" : "true"}
-          whileHover={isScrambleComplete ? { 
-            scale: 1.015, 
-            y: -4,
-            opacity: 0.2,
-          } : undefined}
-          transition={{ duration: 0.4, ease: appleEase }}
-          onClick={isScrambleComplete ? () => {
-            const aboutSection = document.getElementById("about");
-            if (aboutSection) {
-              const lenis = (window as unknown as { lenis?: Lenis }).lenis;
-              if (lenis) {
-                lenis.scrollTo(aboutSection, {
-                  duration: 1.0,
-                  easing: (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
-                });
-              } else {
-                aboutSection.scrollIntoView({ behavior: "smooth" });
+          <motion.h1
+            className={`relative text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold uppercase tracking-tight text-engineering-white leading-none group text-center ${isScrambleComplete ? "cursor-pointer" : "pointer-events-none"
+              }`}
+            variants={itemVariants}
+            data-cursor-default={isScrambleComplete ? "false" : "true"}
+            whileHover={isScrambleComplete ? {
+              scale: 1.015,
+              y: -4,
+              opacity: 0.2,
+            } : undefined}
+            transition={{ duration: 0.4, ease: appleEase }}
+            onClick={isScrambleComplete ? () => {
+              const aboutSection = document.getElementById("about");
+              if (aboutSection) {
+                const lenis = (window as unknown as { lenis?: Lenis }).lenis;
+                if (lenis) {
+                  lenis.scrollTo(aboutSection, {
+                    duration: 1.0,
+                    easing: (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+                  });
+                } else {
+                  aboutSection.scrollIntoView({ behavior: "smooth" });
+                }
               }
-            }
-          } : undefined}
-        >
-          {/* Subtle hover glow effect - only when interactive */}
-          {isScrambleComplete && (
-            <span
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-              aria-hidden="true"
-            />
-          )}
-          {/* Text with scramble decode effect */}
-          <span className="relative inline-block">
-            <TextScramble 
-              text="Evan Sie"
-              delay={SCRAMBLE_DELAY}
-              duration={SCRAMBLE_DURATION}
-              onComplete={() => setIsScrambleComplete(true)}
-            />
-          </span>
-        </motion.h1>
+            } : undefined}
+          >
+            {/* Subtle hover glow effect - only when interactive */}
+            {isScrambleComplete && (
+              <span
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                aria-hidden="true"
+              />
+            )}
+            {/* Text with scramble decode effect */}
+            <span className="relative inline-block">
+              <TextScramble
+                text="Evan Sie"
+                delay={SCRAMBLE_DELAY}
+                duration={SCRAMBLE_DURATION}
+                onComplete={() => setIsScrambleComplete(true)}
+              />
+            </span>
+          </motion.h1>
 
-        <motion.p
-          className="mt-4 sm:mt-6 md:mt-8 text-xs sm:text-sm md:text-base tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-base/70 uppercase font-mono text-center"
-          variants={itemVariants}
-        >
-          University of Texas at Dallas
-        </motion.p>
+          <motion.p
+            className="mt-4 sm:mt-6 md:mt-8 text-xs sm:text-sm md:text-base tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-base/70 uppercase font-mono text-center"
+            variants={itemVariants}
+          >
+            University of Texas at Dallas
+          </motion.p>
         </motion.div>
       </div>
 

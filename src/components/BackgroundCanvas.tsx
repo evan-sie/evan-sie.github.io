@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useCallback } from "react";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // USER CONFIGURATION SECTION
@@ -76,245 +76,269 @@ function smoothFade(
 // ═══════════════════════════════════════════════════════════════════════════
 
 export default function BackgroundCanvas() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
-  const lastScrollUpdate = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef(0);
+  const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const lastMouseUpdate = useRef(0);
   const rafRef = useRef<number>(0);
 
-  const updateScroll = useCallback(() => {
-    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = scrollHeight > 0 ? window.scrollY / scrollHeight : 0;
-    setScrollProgress(progress);
+  // Refs for each blob element — avoid re-rendering
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const aboutLeftRef = useRef<HTMLDivElement>(null);
+  const aboutRightRef = useRef<HTMLDivElement>(null);
+  const midPrimaryRef = useRef<HTMLDivElement>(null);
+  const midSecondaryRef = useRef<HTMLDivElement>(null);
+  const midBronzeRef = useRef<HTMLDivElement>(null);
+  const worksLeftRef = useRef<HTMLDivElement>(null);
+  const worksRightRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
+  const horizonRef = useRef<HTMLDivElement>(null);
+
+  // Update loop — reads refs, writes to DOM directly (no React re-render)
+  const updateVisuals = useCallback(() => {
+    const p = scrollRef.current;
+    const mouse = mouseRef.current;
+
+    // Parallax positions
+    const heroY = p * BLOB_MOVEMENT.hero;
+    const aboutLeftY = p * BLOB_MOVEMENT.aboutLeft;
+    const aboutRightY = p * BLOB_MOVEMENT.aboutRight;
+    const midPrimaryY = p * BLOB_MOVEMENT.midPrimary;
+    const midSecondaryY = p * BLOB_MOVEMENT.midSecondary;
+    const midBronzeY = p * BLOB_MOVEMENT.midBronze;
+    const worksY = p * BLOB_MOVEMENT.works;
+    const worksRightY = p * BLOB_MOVEMENT.worksRight;
+
+    // Opacity curves
+    const heroOp = smoothFade(p, 0.00, 0.00, 0.12, 0.28);
+    const aboutLeftOp = smoothFade(p, 0.04, 0.10, 0.24, 0.38);
+    const aboutRightOp = smoothFade(p, 0.06, 0.13, 0.28, 0.42);
+    const midPrimaryOp = smoothFade(p, 0.18, 0.26, 0.52, 0.62);
+    const midSecondaryOp = smoothFade(p, 0.22, 0.30, 0.55, 0.67);
+    const midBronzeOp = smoothFade(p, 0.28, 0.36, 0.48, 0.58);
+    const worksOp = smoothFade(p, 0.42, 0.52, 0.72, 0.82);
+    const worksRightOp = smoothFade(p, 0.48, 0.56, 0.68, 0.78);
+    const contactOp = smoothFade(p, 0.68, 0.78, 1.00, 1.01);
+
+    // Direct DOM writes — no setState
+    if (spotlightRef.current) {
+      spotlightRef.current.style.background = `radial-gradient(circle ${SPOTLIGHT.radius}px at ${mouse.x * 100}% ${mouse.y * 100}%, rgba(${GRADIENT_COLORS.turbonite}, ${SPOTLIGHT.opacity}), transparent 60%)`;
+    }
+    if (heroRef.current) {
+      heroRef.current.style.transform = `translate3d(0, ${heroY}%, 0)`;
+      heroRef.current.style.opacity = String(heroOp);
+    }
+    if (aboutLeftRef.current) {
+      aboutLeftRef.current.style.transform = `translate3d(0, ${aboutLeftY}%, 0)`;
+      aboutLeftRef.current.style.opacity = String(aboutLeftOp);
+    }
+    if (aboutRightRef.current) {
+      aboutRightRef.current.style.transform = `translate3d(0, ${aboutRightY}%, 0)`;
+      aboutRightRef.current.style.opacity = String(aboutRightOp);
+    }
+    if (midPrimaryRef.current) {
+      midPrimaryRef.current.style.transform = `translate3d(0, ${midPrimaryY}%, 0)`;
+      midPrimaryRef.current.style.opacity = String(midPrimaryOp);
+    }
+    if (midSecondaryRef.current) {
+      midSecondaryRef.current.style.transform = `translate3d(0, ${midSecondaryY}%, 0)`;
+      midSecondaryRef.current.style.opacity = String(midSecondaryOp);
+    }
+    if (midBronzeRef.current) {
+      midBronzeRef.current.style.transform = `translate3d(0, ${midBronzeY}%, 0)`;
+      midBronzeRef.current.style.opacity = String(midBronzeOp);
+    }
+    if (worksLeftRef.current) {
+      worksLeftRef.current.style.transform = `translate3d(0, ${worksY}%, 0)`;
+      worksLeftRef.current.style.opacity = String(worksOp);
+    }
+    if (worksRightRef.current) {
+      worksRightRef.current.style.transform = `translate3d(0, ${worksRightY}%, 0)`;
+      worksRightRef.current.style.opacity = String(worksRightOp);
+    }
+    if (contactRef.current) {
+      contactRef.current.style.opacity = String(contactOp);
+    }
+    if (horizonRef.current) {
+      horizonRef.current.style.transform = `translate3d(0, ${midPrimaryY * 0.3}%, 0)`;
+    }
   }, []);
 
-  // Scroll handler
+  // Single rAF loop — updates every frame rather than on throttled events
+  useEffect(() => {
+    let running = true;
+
+    const tick = () => {
+      if (!running) return;
+      updateVisuals();
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      running = false;
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [updateVisuals]);
+
+  // Scroll listener — just updates the ref, no setState
   useEffect(() => {
     const handleScroll = () => {
-      const now = Date.now();
-      if (now - lastScrollUpdate.current < 50) return;
-      lastScrollUpdate.current = now;
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(updateScroll);
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      scrollRef.current = scrollHeight > 0 ? Math.max(0, Math.min(1, window.scrollY / scrollHeight)) : 0;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, [updateScroll]);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // Global mouse spotlight
+  // Mouse listener — just updates the ref, no setState
   useEffect(() => {
     const interval = 1000 / SPOTLIGHT.throttleFps;
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
       if (now - lastMouseUpdate.current < interval) return;
       lastMouseUpdate.current = now;
-      setMousePos({
+      mouseRef.current = {
         x: e.clientX / window.innerWidth,
         y: e.clientY / window.innerHeight,
-      });
+      };
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // SCROLL-BASED PARALLAX TRANSFORMS
-  // Each blob moves at a different speed for depth (per .cursorrules)
-  // ═══════════════════════════════════════════════════════════════════════
-  const p = scrollProgress;
-
-  const heroY = p * BLOB_MOVEMENT.hero;
-  const aboutLeftY = p * BLOB_MOVEMENT.aboutLeft;
-  const aboutRightY = p * BLOB_MOVEMENT.aboutRight;
-  const midPrimaryY = p * BLOB_MOVEMENT.midPrimary;
-  const midSecondaryY = p * BLOB_MOVEMENT.midSecondary;
-  const midBronzeY = p * BLOB_MOVEMENT.midBronze;
-  const worksY = p * BLOB_MOVEMENT.works;
-  const worksRightY = p * BLOB_MOVEMENT.worksRight;
-
-  // ═══════════════════════════════════════════════════════════════════════
-  // OPACITY CURVES — wider overlapping ranges for seamless transitions
-  // ═══════════════════════════════════════════════════════════════════════
-
-  //                                fadeIn  fullStart  fullEnd  fadeOut
-  const heroOp        = smoothFade(p, 0.00, 0.00, 0.12, 0.28);
-  const aboutLeftOp   = smoothFade(p, 0.04, 0.10, 0.24, 0.38);
-  const aboutRightOp  = smoothFade(p, 0.06, 0.13, 0.28, 0.42);
-  // Mid blobs — wide range to fill the massive spacers
-  const midPrimaryOp  = smoothFade(p, 0.18, 0.26, 0.52, 0.62);
-  const midSecondaryOp= smoothFade(p, 0.22, 0.30, 0.55, 0.67);
-  const midBronzeOp   = smoothFade(p, 0.28, 0.36, 0.48, 0.58);
-  // Works blobs
-  const worksOp       = smoothFade(p, 0.42, 0.52, 0.72, 0.82);
-  const worksRightOp  = smoothFade(p, 0.48, 0.56, 0.68, 0.78);
-  // Contact
-  const contactOp     = smoothFade(p, 0.68, 0.78, 1.00, 1.01);
-
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div ref={containerRef} className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       {/* Base layer */}
       <div className="absolute inset-0 bg-[#050505]" />
 
-      {/* ─── GLOBAL SPOTLIGHT ─── follows cursor across entire page */}
+      {/* Global spotlight — follows cursor */}
       <div
+        ref={spotlightRef}
         className="absolute inset-0 transform-gpu"
-        style={{
-          background: `radial-gradient(circle ${SPOTLIGHT.radius}px at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(${GRADIENT_COLORS.turbonite}, ${SPOTLIGHT.opacity}), transparent 60%)`,
-          transition: `background ${SPOTLIGHT.transition} ease-out`,
-        }}
+        style={{ transition: `background ${SPOTLIGHT.transition} ease-out` }}
       />
 
-      {/* ─── HERO BLOB ─── large turbonite glow, top center */}
+      {/* Hero blob */}
       <div
-        className="absolute transform-gpu"
+        ref={heroRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "-15%",
-          left: "5%",
-          width: "90vw",
-          height: "60vh",
+          top: "-15%", left: "5%", width: "90vw", height: "60vh",
           background: `radial-gradient(ellipse at center, rgba(${GRADIENT_COLORS.turbonite}, ${GRADIENT_OPACITY.hero}) 0%, transparent 55%)`,
           filter: `blur(${BLUR_INTENSITY.gradients}px)`,
-          transform: `translate3d(0, ${heroY}%, 0)`,
-          opacity: heroOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── ABOUT BLOB LEFT ─── warm accent, counter-scrolls upward */}
+      {/* About blob left */}
       <div
-        className="absolute transform-gpu"
+        ref={aboutLeftRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "15%",
-          left: "-15%",
-          width: "60vw",
-          height: "55vh",
+          top: "15%", left: "-15%", width: "60vw", height: "55vh",
           background: `radial-gradient(ellipse at center, rgba(${GRADIENT_COLORS.warm}, ${GRADIENT_OPACITY.aboutLeft}) 0%, transparent 50%)`,
           filter: `blur(${BLUR_INTENSITY.gradients}px)`,
-          transform: `translate3d(0, ${aboutLeftY}%, 0)`,
-          opacity: aboutLeftOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── ABOUT BLOB RIGHT ─── turbonite, drifts down fast */}
+      {/* About blob right */}
       <div
-        className="absolute transform-gpu"
+        ref={aboutRightRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "20%",
-          right: "-10%",
-          width: "55vw",
-          height: "50vh",
+          top: "20%", right: "-10%", width: "55vw", height: "50vh",
           background: `radial-gradient(ellipse at center, rgba(${GRADIENT_COLORS.turbonite}, ${GRADIENT_OPACITY.aboutRight}) 0%, transparent 45%)`,
           filter: `blur(${BLUR_INTENSITY.gradients}px)`,
-          transform: `translate3d(0, ${aboutRightY}%, 0)`,
-          opacity: aboutRightOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── MID BLOB PRIMARY ─── massive, fills spacer between About/Quote/Engineering */}
+      {/* Mid blob primary */}
       <div
-        className="absolute transform-gpu"
+        ref={midPrimaryRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "10%",
-          left: "0%",
-          width: "100vw",
-          height: "80vh",
+          top: "10%", left: "0%", width: "100vw", height: "80vh",
           background: `radial-gradient(ellipse 80% 60% at 35% 50%, rgba(${GRADIENT_COLORS.turbonite}, ${GRADIENT_OPACITY.midPrimary}) 0%, transparent 65%)`,
           filter: `blur(${BLUR_INTENSITY.large}px)`,
-          transform: `translate3d(0, ${midPrimaryY}%, 0)`,
-          opacity: midPrimaryOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── MID BLOB SECONDARY ─── cool steel, counter-direction for depth */}
+      {/* Mid blob secondary */}
       <div
-        className="absolute transform-gpu"
+        ref={midSecondaryRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "30%",
-          right: "-5%",
-          width: "65vw",
-          height: "60vh",
+          top: "30%", right: "-5%", width: "65vw", height: "60vh",
           background: `radial-gradient(ellipse at center, rgba(${GRADIENT_COLORS.cool}, ${GRADIENT_OPACITY.midSecondary}) 0%, transparent 55%)`,
           filter: `blur(${BLUR_INTENSITY.large}px)`,
-          transform: `translate3d(0, ${midSecondaryY}%, 0)`,
-          opacity: midSecondaryOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── MID BLOB BRONZE ─── 'Legends' accent, fastest parallax */}
+      {/* Mid blob bronze */}
       <div
-        className="absolute transform-gpu"
+        ref={midBronzeRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "25%",
-          left: "20%",
-          width: "45vw",
-          height: "40vh",
+          top: "25%", left: "20%", width: "45vw", height: "40vh",
           background: `radial-gradient(ellipse at center, rgba(${GRADIENT_COLORS.bronze}, ${GRADIENT_OPACITY.midBronze}) 0%, transparent 50%)`,
           filter: `blur(${BLUR_INTENSITY.large}px)`,
-          transform: `translate3d(0, ${midBronzeY}%, 0)`,
-          opacity: midBronzeOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── WORKS BLOB LEFT ─── turbonite, drifts up during Engineering */}
+      {/* Works blob left */}
       <div
-        className="absolute transform-gpu"
+        ref={worksLeftRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "5%",
-          left: "-10%",
-          width: "65vw",
-          height: "60vh",
+          top: "5%", left: "-10%", width: "65vw", height: "60vh",
           background: `radial-gradient(ellipse at center, rgba(${GRADIENT_COLORS.turbonite}, ${GRADIENT_OPACITY.works}) 0%, transparent 50%)`,
           filter: `blur(${BLUR_INTENSITY.gradients}px)`,
-          transform: `translate3d(0, ${worksY}%, 0)`,
-          opacity: worksOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── WORKS BLOB RIGHT ─── warm accent, drifts down */}
+      {/* Works blob right */}
       <div
-        className="absolute transform-gpu"
+        ref={worksRightRef}
+        className="absolute transform-gpu will-change-[transform,opacity]"
         style={{
-          top: "15%",
-          right: "-8%",
-          width: "50vw",
-          height: "50vh",
+          top: "15%", right: "-8%", width: "50vw", height: "50vh",
           background: `radial-gradient(ellipse at center, rgba(${GRADIENT_COLORS.warm}, ${GRADIENT_OPACITY.worksRight}) 0%, transparent 45%)`,
           filter: `blur(${BLUR_INTENSITY.gradients}px)`,
-          transform: `translate3d(0, ${worksRightY}%, 0)`,
-          opacity: worksRightOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── CONTACT GRADIENT ─── rises from bottom */}
+      {/* Contact gradient */}
       <div
-        className="absolute transform-gpu"
+        ref={contactRef}
+        className="absolute transform-gpu will-change-opacity"
         style={{
-          bottom: "-10%",
-          left: "0%",
-          width: "100vw",
-          height: "50vh",
+          bottom: "-10%", left: "0%", width: "100vw", height: "50vh",
           background: `radial-gradient(ellipse 100% 60% at 50% 100%, rgba(${GRADIENT_COLORS.turbonite}, ${GRADIENT_OPACITY.contact}) 0%, transparent 100%)`,
           filter: `blur(${BLUR_INTENSITY.gradients}px)`,
-          opacity: contactOp,
+          opacity: 0,
         }}
       />
 
-      {/* ─── HORIZON LINE ─── always visible, subtle depth cue */}
+      {/* Horizon line */}
       <div
-        className="absolute transform-gpu"
+        ref={horizonRef}
+        className="absolute transform-gpu will-change-transform"
         style={{
-          top: "50%",
-          left: "-10%",
-          width: "120vw",
-          height: "15vh",
+          top: "50%", left: "-10%", width: "120vw", height: "15vh",
           background: "linear-gradient(180deg, transparent 0%, rgba(26, 28, 32, 0.18) 50%, transparent 100%)",
           filter: `blur(${BLUR_INTENSITY.horizon}px)`,
-          transform: `translate3d(0, ${midPrimaryY * 0.3}%, 0)`,
           opacity: GRADIENT_OPACITY.horizon,
         }}
       />

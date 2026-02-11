@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, useScroll, useTransform, AnimatePresence, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-
-const appleEase = [0.16, 1, 0.3, 1] as const;
+import { appleEase } from "@/lib/constants";
+import TrafficLights from "@/components/ui/TrafficLights";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // COURSEWORK DATA
@@ -31,104 +31,6 @@ const COURSEWORK: Course[] = [
 // COMPONENTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-interface TrafficLightsProps {
-  onClick?: () => void;
-}
-
-// Unified spring - snappy but heavy Porsche precision (same as dock icons)
-const MAGNETIC_SPRING = { stiffness: 350, damping: 35 };
-
-function TrafficLights({ onClick }: TrafficLightsProps) {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  
-  // Spring-based offset for magnetic tug (same as dock icons)
-  const offsetX = useSpring(0, MAGNETIC_SPRING);
-  const offsetY = useSpring(0, MAGNETIC_SPRING);
-  const magneticScale = useSpring(1, MAGNETIC_SPRING);
-  
-  // Listen for magnetic events
-  useEffect(() => {
-    const el = buttonRef.current;
-    if (!el || !onClick) return;
-    
-    const handleMove = (e: Event) => {
-      const { deltaX, deltaY } = (e as CustomEvent).detail;
-      offsetX.set(deltaX);
-      offsetY.set(deltaY);
-      magneticScale.set(1.85); // 15% more than original 1.6x
-      setIsHovered(true);
-    };
-    
-    const handleLeave = () => {
-      offsetX.set(0);
-      offsetY.set(0);
-      magneticScale.set(1);
-      setIsHovered(false);
-    };
-    
-    el.addEventListener("magnetic-move", handleMove);
-    el.addEventListener("magnetic-leave", handleLeave);
-    
-    return () => {
-      el.removeEventListener("magnetic-move", handleMove);
-      el.removeEventListener("magnetic-leave", handleLeave);
-    };
-  }, [onClick, offsetX, offsetY, magneticScale]);
-  
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // Reset cursor state immediately before modal closes
-    window.dispatchEvent(new CustomEvent("cursor-reset"));
-    onClick?.();
-  };
-  
-  if (!onClick) {
-    return (
-      <div className="flex items-center gap-1.5">
-        <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-      </div>
-    );
-  }
-  
-  return (
-    <div className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded">
-      {/* Larger invisible hit area - acts as magnetic zone */}
-      <div className="relative -m-3 p-3" data-magnetic-zone="true">
-        {/* Red close button - magnetic target with tug effect */}
-        <motion.button
-          ref={buttonRef}
-          onClick={handleClick}
-          data-magnetic-target="true"
-          className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] cursor-pointer flex items-center justify-center relative"
-          style={{
-            x: offsetX,
-            y: offsetY,
-            scale: magneticScale,
-          }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <motion.svg 
-            className="absolute w-full h-full p-0.5" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="#4a0000" 
-            strokeWidth="4"
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
-          </motion.svg>
-        </motion.button>
-      </div>
-      <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-      <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-    </div>
-  );
-}
-
 // Coursework Modal
 interface CourseModalProps {
   course: Course;
@@ -140,7 +42,7 @@ function CourseModal({ course, onClose }: CourseModalProps) {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    
+
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
@@ -248,7 +150,7 @@ function CourseChip({ course, index, onClick }: CourseChipProps) {
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
@@ -281,17 +183,17 @@ export default function About() {
 
   return (
     <>
-      <section 
+      <section
         ref={sectionRef}
-        id="about" 
+        id="about"
         className="relative min-h-screen py-20 sm:py-32 md:py-48"
       >
         <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-7xl">
           {/* Asymmetrical Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16">
-            
+
             {/* Left Column - Photo (max-w-[280px]) */}
-            <motion.div 
+            <motion.div
               className="lg:col-span-5 relative flex justify-center lg:justify-start"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -313,7 +215,7 @@ export default function About() {
                 {/* Photo container */}
                 <div className="relative aspect-[3/4] rounded-b-lg overflow-hidden bg-deep-black/20 backdrop-blur-sm border border-white/10 border-t-0 hover:border-turbonite-highlight/30 transition-all duration-200 cursor-pointer hover:scale-[1.02] opacity-100 hover:brightness-125">
                   {/* Photo */}
-                  <div 
+                  <div
                     className="absolute inset-0 bg-gradient-to-br from-turbonite-base/30 to-deep-black"
                     style={{
                       backgroundImage: "url('/me.jpg')",
@@ -321,10 +223,10 @@ export default function About() {
                       backgroundPosition: "center",
                     }}
                   />
-                  
+
                   {/* Glass overlay tint */}
                   <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 via-turbonite-base/30 to-transparent" />
-                  
+
                   {/* Decorative frame corners */}
                   <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-turbonite-highlight/40" />
                   <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-turbonite-highlight/40" />
@@ -339,12 +241,12 @@ export default function About() {
                   </div>
                 </div>
 
-                
+
               </div>
             </motion.div>
 
             {/* Right Column - Content */}
-            <motion.div 
+            <motion.div
               className="lg:col-span-7"
               variants={containerVariants}
               initial="hidden"
@@ -353,7 +255,7 @@ export default function About() {
               style={{ y: contentY }}
             >
               {/* Section label */}
-              <motion.p 
+              <motion.p
                 className="text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-highlight uppercase mb-6 sm:mb-8 text-center lg:text-left"
                 variants={itemVariants}
                 style={{ y: headerY }}
@@ -375,7 +277,7 @@ export default function About() {
               </motion.div>
 
               {/* Divider */}
-              <motion.div 
+              <motion.div
                 className="w-24 h-px bg-gradient-to-r from-turbonite-highlight to-transparent my-8 sm:my-10 mx-auto lg:mx-0"
                 variants={itemVariants}
               />
@@ -390,7 +292,7 @@ export default function About() {
               </motion.div>
 
               {/* Coursework - Clickable Chips */}
-              <motion.div 
+              <motion.div
                 className="mt-10 sm:mt-14"
                 variants={itemVariants}
               >
@@ -416,9 +318,9 @@ export default function About() {
       {/* Course Modal */}
       <AnimatePresence>
         {selectedCourse && (
-          <CourseModal 
-            course={selectedCourse} 
-            onClose={() => setSelectedCourse(null)} 
+          <CourseModal
+            course={selectedCourse}
+            onClose={() => setSelectedCourse(null)}
           />
         )}
       </AnimatePresence>

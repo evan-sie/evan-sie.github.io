@@ -11,8 +11,9 @@ const config: Config = {
       colors: {
         "deep-black": "#050505",
         "engineering-white": "#F2F2F2",
-        "turbonite-base": "#4E4F50",
+        "turbonite-base": "#4E4B48",
         "turbonite-highlight": "#8C8279",
+        "bronze-accent": "#C49866",
       },
       fontFamily: {
         // PorscheNext as primary, with system fallbacks (no Arial)

@@ -5,8 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { motion } from "framer-motion";
 import * as THREE from "three";
-
-const appleEase = [0.16, 1, 0.3, 1] as const;
+import { appleEase } from "@/lib/constants";
 
 // Shared scroll state
 const scrollState = { progress: 0 };
@@ -92,24 +91,24 @@ const ANIMATION = {
 
 // Desktop camera keyframes
 const CAMERA_KEYFRAMES_DESKTOP = [
-  { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 1, -2],    label: "Hero" },
-  { scroll: 0.13, pos: [-4, 4, -8],    target: [1, 1.5, -4],    label: "About" },
+  { scroll: 0.0, pos: [-4, 3, -8], target: [0, 1, -2], label: "Hero" },
+  { scroll: 0.13, pos: [-4, 4, -8], target: [1, 1.5, -4], label: "About" },
   // { scroll: 0.24, pos: [-4, 4, -5],    target: [1, 1.5, 0],  label: "About" },
   // { scroll: 0.39, pos: [-9, 3, -4],    target: [1, 1.5, -4],  label: "About" },
-  { scroll: 0.57,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  { scroll: 0.57, pos: [-3, 3, 9], target: [1.0, 1, -6], label: "Engineering" },
   // { scroll: 0.7,  pos: [-3, 2, 9],     target: [1.0, 1, -6],  label: "Engineering" },
-  { scroll: 1.0,  pos: [-2, -3, 11],   target: [-3.5, 5, -9],    label: "Contact" },
+  { scroll: 1.0, pos: [-2, -3, 11], target: [-3.5, 5, -9], label: "Contact" },
 ];
 
 // Mobile camera keyframes - centered SR-71 on contact page
 const CAMERA_KEYFRAMES_MOBILE = [
-  { scroll: 0.0,  pos: [-4, 3, -8],    target: [0, 3, -2],    label: "Hero" },
-  { scroll: 0.13, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
+  { scroll: 0.0, pos: [-4, 3, -8], target: [0, 3, -2], label: "Hero" },
+  { scroll: 0.13, pos: [-3, 4, -6], target: [0, 1, -2], label: "About" },
   // { scroll: 0, pos: [-3, 4, -6],    target: [0, 1, -2],   label: "About" },
-  { scroll: 0.67,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
+  { scroll: 0.67, pos: [-3, 3, 9], target: [1.0, 1, -6], label: "Engineering" },
   // { scroll: 0.786453,  pos: [-3, 3, 9],     target: [1.0, 1, -6],  label: "Engineering" },
   // Mobile contact: SR-71 centered, viewed from below
-  { scroll: 1.0,  pos: [0, 4, 12],    target: [0, 10, -3],    label: "Contact" },
+  { scroll: 1.0, pos: [0, 4, 12], target: [0, 10, -3], label: "Contact" },
 ];
 
 // ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -157,16 +156,16 @@ function Afterburner({ position }: { position: [number, number, number] }) {
 
   useFrame(({ clock }) => {
     if (!materialRef.current) return;
-    
+
     const t = clock.elapsedTime;
     const { flickerSpeed, flickerIntensity, baseOpacity } = AFTERBURNER;
-    
+
     // Multi-frequency flicker for realistic effect
-    const flicker = 
+    const flicker =
       Math.sin(t * flickerSpeed) * 0.4 +
       Math.sin(t * flickerSpeed * 1.7 + 1.3) * 0.35 +
       Math.sin(t * flickerSpeed * 2.3 + 2.1) * 0.25;
-    
+
     const normalizedFlicker = (flicker + 1) / 2; // 0 to 1
     materialRef.current.opacity = baseOpacity + normalizedFlicker * flickerIntensity;
     materialRef.current.emissiveIntensity = 1.0 + normalizedFlicker * 0.8;
@@ -200,28 +199,28 @@ function SR71Model() {
   // Create clean edge wireframe
   const edgeLines = useMemo(() => {
     const lines: THREE.LineSegments[] = [];
-    
+
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         const geometry = mesh.geometry;
-        
+
         const edgesGeometry = new THREE.EdgesGeometry(geometry, EDGE_CONFIG.thresholdAngle);
         const lineMaterial = new THREE.LineBasicMaterial({
           color: EDGE_CONFIG.color,
           transparent: true,
           opacity: EDGE_CONFIG.opacity,
         });
-        
+
         const lineSegments = new THREE.LineSegments(edgesGeometry, lineMaterial);
         lineSegments.position.copy(mesh.position);
         lineSegments.rotation.copy(mesh.rotation);
         lineSegments.scale.copy(mesh.scale);
-        
+
         lines.push(lineSegments);
       }
     });
-    
+
     return lines;
   }, [scene]);
 
@@ -266,7 +265,7 @@ function SR71Model() {
       autoBank,
       lerpFactor
     );
-    
+
     // Apply intro animation to Z position + bob
     groupRef.current.position.y = autoBob;
     groupRef.current.position.z = introZ;
@@ -312,7 +311,7 @@ function FlightDirector({ isMobile }: { isMobile: boolean }) {
   const currentLookAt = useRef(new THREE.Vector3());
   const targetPosition = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
-  
+
   // Select keyframes based on device
   const KEYFRAMES = isMobile ? CAMERA_KEYFRAMES_MOBILE : CAMERA_KEYFRAMES_DESKTOP;
 
@@ -347,8 +346,8 @@ function FlightDirector({ isMobile }: { isMobile: boolean }) {
 
     // Calculate segment progress
     const segmentRange = endKeyframe.scroll - startKeyframe.scroll;
-    const segmentProgress = segmentRange > 0 
-      ? (progress - startKeyframe.scroll) / segmentRange 
+    const segmentProgress = segmentRange > 0
+      ? (progress - startKeyframe.scroll) / segmentRange
       : 1;
 
     // Smooth easing

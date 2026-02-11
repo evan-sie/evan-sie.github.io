@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const appleEase = [0.16, 1, 0.3, 1] as const;
+import { appleEase } from "@/lib/constants";
 
 // Split quote into words for staggered animation
 const QUOTE_TEXT = "You never change things by fighting the existing reality. To change something, build a new model that makes the existing model obsolete.";
@@ -21,8 +20,8 @@ export default function FlyingQuote() {
   };
 
   const wordVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 20,
       filter: "blur(8px)",
     },
@@ -47,7 +46,7 @@ export default function FlyingQuote() {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 1, ease: appleEase }}
       >
-        <div 
+        <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full"
           style={{
             background: "radial-gradient(ellipse at center, rgba(140, 130, 121, 0.06) 0%, transparent 70%)",

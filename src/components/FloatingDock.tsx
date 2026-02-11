@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
-import { motion, AnimatePresence, useSpring } from "framer-motion";
+import { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import { motion, useSpring, AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
-
-const appleEase = [0.16, 1, 0.3, 1] as const;
-
-// Snappy but heavy spring - Porsche precision
-const magneticSpring = { stiffness: 350, damping: 35 };
+import { appleEase, MAGNETIC_SPRING } from "@/lib/constants";
 
 // --- CONFIGURATION ---
-const SHADOW_COLOR = "rgba(255, 255, 255, 0.06)"; 
-const SHADOW_INTENSITY = "0px 0px 20px 0px"; 
+const SHADOW_COLOR = "rgba(255, 255, 255, 0.06)";
+const SHADOW_INTENSITY = "0px 0px 20px 0px";
 
 interface DockItemProps {
   icon: React.ReactNode;
@@ -23,12 +19,12 @@ interface DockItemProps {
 function DockItem({ icon, label, href, isActive }: DockItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   const itemRef = useRef<HTMLAnchorElement>(null);
-  
+
   // Spring-based offset for magnetic tug effect
-  const offsetX = useSpring(0, magneticSpring);
-  const offsetY = useSpring(0, magneticSpring);
-  const magneticScale = useSpring(1, magneticSpring);
-  
+  const offsetX = useSpring(0, MAGNETIC_SPRING);
+  const offsetY = useSpring(0, MAGNETIC_SPRING);
+  const magneticScale = useSpring(1, MAGNETIC_SPRING);
+
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     const target = document.querySelector(href) as HTMLElement | null;
@@ -53,23 +49,23 @@ function DockItem({ icon, label, href, isActive }: DockItemProps) {
   useEffect(() => {
     const element = itemRef.current;
     if (!element) return;
-    
+
     const handleMagneticMove = (e: Event) => {
       const { deltaX, deltaY } = (e as CustomEvent).detail;
       offsetX.set(deltaX);
       offsetY.set(deltaY);
       magneticScale.set(1.15); // Slight scale up when magnetic
     };
-    
+
     const handleMagneticLeave = () => {
       offsetX.set(0);
       offsetY.set(0);
       magneticScale.set(1);
     };
-    
+
     element.addEventListener("magnetic-move", handleMagneticMove);
     element.addEventListener("magnetic-leave", handleMagneticLeave);
-    
+
     return () => {
       element.removeEventListener("magnetic-move", handleMagneticMove);
       element.removeEventListener("magnetic-leave", handleMagneticLeave);
@@ -159,11 +155,11 @@ export default function FloatingDock() {
   const [activeSection, setActiveSection] = useState("hero");
   const [isMobile, setIsMobile] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Use ref for manual open state to avoid useEffect re-triggering
   const isManuallyOpenRef = useRef(false);
   const lastScrollY = useRef(0);
-  
+
   // Dock is visually expanded if: manually opened, scroll-triggered, OR hovering (but NOT when modal is open)
   const shouldBeExpanded = !isModalOpen && (isExpanded || isHovering);
 
@@ -179,17 +175,17 @@ export default function FloatingDock() {
     const checkModalState = () => {
       setIsModalOpen(document.body.hasAttribute("data-modal-open"));
     };
-    
+
     // Check initially
     checkModalState();
-    
+
     // Watch for changes using MutationObserver
     const observer = new MutationObserver(checkModalState);
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ["data-modal-open"],
     });
-    
+
     return () => observer.disconnect();
   }, []);
 
@@ -232,14 +228,14 @@ export default function FloatingDock() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     // Don't call handleScroll() immediately - let the initial state be collapsed
-    
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleDotClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     isManuallyOpenRef.current = true;
-      setIsExpanded(true);
+    setIsExpanded(true);
   };
 
   // Dimensions based on state
@@ -252,8 +248,8 @@ export default function FloatingDock() {
       className="fixed bottom-6 sm:bottom-8 left-1/2 z-[60]"
       style={{ x: "-50%" }}
       initial={{ y: 100, opacity: 0 }}
-      animate={{ 
-        y: 0, 
+      animate={{
+        y: 0,
         opacity: isModalOpen ? 0 : 1,
         pointerEvents: isModalOpen ? "none" : "auto",
       }}
@@ -270,7 +266,7 @@ export default function FloatingDock() {
         }}
         transition={{ duration: 0.3, ease: appleEase }}
         style={{
-          backgroundColor: shouldBeExpanded ? "rgba(5, 5, 5, 0.15)" : "transparent", 
+          backgroundColor: shouldBeExpanded ? "rgba(5, 5, 5, 0.15)" : "transparent",
           border: shouldBeExpanded ? "1px solid rgba(255, 255, 255, 0.08)" : "none",
           // boxShadow: `${SHADOW_INTENSITY} ${SHADOW_COLOR}`,
           cursor: shouldBeExpanded ? "default" : "pointer",
@@ -281,39 +277,39 @@ export default function FloatingDock() {
       >
         {/* Inner highlight - liquid glass effect - only when expanded */}
         {shouldBeExpanded && (
-          <div 
+          <div
             className="absolute inset-0 pointer-events-none rounded-[inherit] overflow-hidden"
-            style={{ 
+            style={{
               background: "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 50%, transparent 90%, rgba(255,255,255,0.01) 100%)",
             }}
           />
         )}
 
         {/* Pulsating Dot - visible when collapsed */}
-            <motion.div
+        <motion.div
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
           animate={{ opacity: shouldBeExpanded ? 0 : 1 }}
           transition={{ duration: 0.2 }}
-            >
+        >
           <div className="w-3 h-3 rounded-full bg-turbonite-highlight animate-pulse" />
-      </motion.div>
+        </motion.div>
 
         {/* Dock Items - visible when expanded */}
-          <motion.nav
-            className="absolute inset-0 flex items-center justify-center"
+        <motion.nav
+          className="absolute inset-0 flex items-center justify-center"
           animate={{ opacity: shouldBeExpanded ? 1 : 0 }}
           transition={{ duration: 0.2, delay: shouldBeExpanded ? 0.1 : 0 }}
-          >
+        >
           <div className="flex items-center gap-0.5 sm:gap-1 px-1 sm:px-2">
-              <DockItem icon={<HomeIcon />} label="Home" href="#hero" isActive={activeSection === "hero"} />
+            <DockItem icon={<HomeIcon />} label="Home" href="#hero" isActive={activeSection === "hero"} />
             <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
-              <DockItem icon={<AboutIcon />} label="About" href="#about" isActive={activeSection === "about"} />
+            <DockItem icon={<AboutIcon />} label="About" href="#about" isActive={activeSection === "about"} />
             <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
-              <DockItem icon={<WorksIcon />} label="Works" href="#works" isActive={activeSection === "works"} />
+            <DockItem icon={<WorksIcon />} label="Works" href="#works" isActive={activeSection === "works"} />
             <div className="w-px h-5 sm:h-6 bg-white/10 mx-0.5 sm:mx-2" />
-              <DockItem icon={<ContactIcon />} label="Contact" href="#contact" isActive={activeSection === "contact"} />
-            </div>
-          </motion.nav>
+            <DockItem icon={<ContactIcon />} label="Contact" href="#contact" isActive={activeSection === "contact"} />
+          </div>
+        </motion.nav>
       </motion.div>
     </motion.div>
   );

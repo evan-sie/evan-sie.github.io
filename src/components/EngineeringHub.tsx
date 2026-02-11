@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { appleEase } from "@/lib/constants";
+import TrafficLights from "@/components/ui/TrafficLights";
 
 interface Project {
   id: string;
@@ -15,8 +17,6 @@ interface Project {
   gifUrl?: string;         // Optional GIF for grid preview
   galleryImages?: string[]; // Optional gallery images for modal
 }
-
-const appleEase = [0.16, 1, 0.3, 1] as const;
 
 // Smooth easing for layout animations
 const layoutTransition = {
@@ -48,197 +48,20 @@ const projects: Project[] = [
 - Published a technical research paper
 `
   },
-  // {
-  //   id: "calculator",
-  //   title: "Calculator LiPo Battery Mod",
-  //   date: "2025.12",
-  //   span: "wide",
-  //   description: "Converting my old Casio calculator to take LiPo batteries instead of AAA",
-  //   tags: ["Soldering", "LiPo", "Modification"],
-  //   image: "/projects/calculator-mod.jpg",
-  //   gifUrl: undefined,
-  //   galleryImages: undefined,
-  //   content: `I had an old Casio FX CG50 calculator that takes AAA batteries. I found that this was quite wasteful 
-  //   and got expensive over the 5 years I had it. I bought a 1500mAh LiPo battery and found a charge controller (Adafruit Powerboost 500) that would ensure the LiPo stayed within 3.2V to 4.2V.
-  //   This was great because the charge controller also outputs 5V, which the calculator requires since it was designed to take AAA batteries.
-  //   I had to make room for the LiPo battery by removing the AAA battery compartment and the AAA battery holder. This required careful dremel work and measurements to make sure all the components fit.
-  //   There were no wiring diagrams of this calculator anywhere online, so I had to reverse engineer the PCBs by using a multimeter to measure voltages at different traces.
-  //   I eventually found a spot where I could solder the inputs of the powerboost to the inputs of the calculator which means I could use the calculator's built in mini-USB port to charge.
-  //   Finally I soldered the 5V output to the + and - terminals of the calculator where the AAA batteries used to be.`,
-  // },
-//   {
-//     id: "Mirror",
-//     title: "Smart Mirror",
-//     date: "2025.01",
-//     span: "tall",
-//     description: "Modyfying a fitness mirror to display time, weather, and ETA to UTD",
-//     tags: ["Raspberry Pi", "Python", "Zsh/Bash"],
-//     image: "/projects/mirror.JPG",
-//     gifUrl: undefined,
-//     galleryImages: undefined,
-//     content: `I had large fitness mirror which sat unsused in my room because the software it ran on was discontinued years ago.
-//    Since the mirror already
-//     had a giant TV screen inside it, I had an idea to reporgram it to display time, weather, ETA to UTD and other useful information. After some research I discovered the company that made the mirror (formally called Mirror) was aquired by Lululemon but has since been discontinued. I also found through a Github repository
-//      that others had attempted to reverse engineer the mirror's screen. Unfortunatly, I happened to have the version 1 of the screen which was not able to be reverse engineered due to the proprietary connector. This was a let down and put the project on hold for a while. One day I was thinking about it again and realized that I didnt need to use the proprietary screen and I could just retrofit an old 1080p monitor I also had laying around.
-//     I took apart the old monitor so that it was just the bare screen and retrofitted it to where the original screen was. 
-//     I found an open source project called 'Magic Mirror' which ran on electron on a Raspberry Pi. After putting everything together,
-//     I was left with a sleek, minimalistic UX interface that elevated the aesthetic of the mirror and made it much more useful.
-
- 
-
-// **Technical Details:**
-// - Python script with Zsh/Bash to update the information every minute
-// - Raspberry Pi 3A+
-// - 1080p monitor
-
-
-
-// Though it was a shame I could not save the original TV screen and the rest of the mirror components to turning into e-waste, I was at least able to salvage
-// the webcam hardware and the lens to repurpose for a new project, and maybe one day the TV screen's connector would get reverse engineered so that I could turn it into another functoinal display in a future project. .`,
-//   },
-
-  
-//   {
-//     id: "fpv",
-//     title: "Freestyle FPV Drone",
-//     date: "2021.07",
-//     span: "default",
-//     description: "A 3 inch freestyle FPV drone ",
-//     tags: ["Betaflight", "Soldering", "UAV Piloting"],
-//     image: "/projects/drone.jpg",
-//     gifUrl: undefined,
-//     galleryImages: undefined,
-//     content: `This was less of a technical achievement and more of a personal hobby where (through typical enginering fashion of trial and error) I learned most of the practical, hands-on engineering skills I use in most of my other projects.
-
-
-// **Skills Learned:**
-// - Soldering. Before starting this hobby I had never soldered before and always asked my Dad (who's an electrical engineer) for help in soldering anything I needed.
-// But after watching him do it for years, and this being the first "project" I funded entirely on my own, I decided to give it shot, soldering + and - terminals to an FPV AIO camera.
-// I did not even have a proper table, nor helping hands (the plier like things that hold the things you solder) but I did it anyway. A major learning curve I overcame was when I had to solder a new micro SD card slot to my FPV camera's PCB. This was no easy task as the solder pins were a mere milimeter in length with a distance between them of less than that. This was where I really got to put in
-// my practice, and helped me understand electrical engineering in a way I've never done before.Since then I was able to accelerate my engineering projects to a new level with this newfound skill.
-// - Electrial Engineering. I had a very basic understanding of circuits in the past as it was not a primary interest of mine. I just knew that a closed loop with a light bulb & power source would light up, and shorting batteries by bridging + and - was bad.
-// However this hobby was primarily electronics and circuits based, which forced me to learn about capacitors, ICs, resistors, heat management and electromagnetism (radio). A huge learning expereince was when I had to put a GPS module on the drone, but it was failing to detect any satelites. After some reasearch I learned that a reason it failed was due to 
-// electromagnetic intereference from the dron'es ESC's and capactiors. Which forced me to learn about ground planes, and how to orient and wire it in a way that would minimize interference. Radio was of a particular interest of me because the very notion of transmitting/recieving data and video over the air seemed like magic.
-// I learned all about antenna theory, RF design, and how to build a radio system that would maximize range and minimize interference, something that I would be able to integrate into my current high altitude weather balloon project.
-// - 3D printing. 3D printing was always something that seemed like science fiction. The very notion that I could design something on a computer and be able to hold that part in my hands felt too good not to try out.
-// - UAV Piloting. This was the fun part of the hobby, where all of your hard work relies on your ability to pilot a drone. This is not a typical 
-// piloting experience however, using VR like goggles I would be able to see the drone's live feed in real time. Futhermore, the drone's flight controller(and thus its flight dynamics) is very "manual" (unlike a typical drone found in a toy section of a Walmart), it is akin to driving a manual transmission car. It takes lots of practice and coordination not to stall the engine, which in this case is not to destroy hundreds of dollars and countless hours of work. I find this to be a useful skill
-// due to the rapid advancements of UAVs in the defense and civilian industry, which requires skilled pilots to operate successfully.`,
-//   },
 ];
-
-
-interface TrafficLightsProps {
-  onClick?: () => void;
-  interactive?: boolean;
-}
-
-// Unified spring - snappy but heavy Porsche precision (same as dock icons)
-const MAGNETIC_SPRING = { stiffness: 350, damping: 35 };
-
-function TrafficLights({ onClick, interactive = false }: TrafficLightsProps) {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  
-  // Spring-based offset for magnetic tug (same as dock icons)
-  const offsetX = useSpring(0, MAGNETIC_SPRING);
-  const offsetY = useSpring(0, MAGNETIC_SPRING);
-  const magneticScale = useSpring(1, MAGNETIC_SPRING);
-  
-  // Listen for magnetic events
-  useEffect(() => {
-    const el = buttonRef.current;
-    if (!el || !interactive) return;
-    
-    const handleMove = (e: Event) => {
-      const { deltaX, deltaY } = (e as CustomEvent).detail;
-      offsetX.set(deltaX);
-      offsetY.set(deltaY);
-      magneticScale.set(1.85); // 15% more than original 1.6x
-      setIsHovered(true);
-    };
-    
-    const handleLeave = () => {
-      offsetX.set(0);
-      offsetY.set(0);
-      magneticScale.set(1);
-      setIsHovered(false);
-    };
-    
-    el.addEventListener("magnetic-move", handleMove);
-    el.addEventListener("magnetic-leave", handleLeave);
-    
-    return () => {
-      el.removeEventListener("magnetic-move", handleMove);
-      el.removeEventListener("magnetic-leave", handleLeave);
-    };
-  }, [interactive, offsetX, offsetY, magneticScale]);
-  
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // Reset cursor state immediately before modal closes
-    window.dispatchEvent(new CustomEvent("cursor-reset"));
-    onClick?.();
-  };
-  
-  if (!interactive) {
-    return (
-      <div className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded bg-[#1a1a1a]">
-        <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-      </div>
-    );
-  }
-  
-  return (
-    <div className="flex items-center gap-1.5 px-2 py-1.5 -mx-2 -my-1.5 rounded">
-      {/* Larger invisible hit area - acts as magnetic zone */}
-      <div className="relative -m-3 p-3" data-magnetic-zone="true">
-        {/* Red close button - magnetic target with tug effect */}
-        <motion.button
-          ref={buttonRef}
-          onClick={handleClick}
-          data-magnetic-target="true"
-          className="w-2.5 h-2.5 rounded-full bg-[#FF5F57] cursor-pointer flex items-center justify-center relative"
-          style={{
-            x: offsetX,
-            y: offsetY,
-            scale: magneticScale,
-          }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <motion.svg 
-            className="absolute w-full h-full p-0.5" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="#4a0000" 
-            strokeWidth="4"
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
-          </motion.svg>
-        </motion.button>
-      </div>
-      <div className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
-      <div className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-    </div>
-  );
-}
 
 function CourseChip({ tag, index }: { tag: string; index: number }) {
   return (
-    <motion.span 
-      className="px-2 py-1 text-[10px] font-mono tracking-wider text-turbonite-highlight bg-white/5 rounded border border-white/10 uppercase cursor-pointer"
+    <motion.span
+      className="px-3 py-1.5 text-[10px] font-mono tracking-wider text-turbonite-base/70 bg-white/[0.02] rounded-md border border-white/5 uppercase select-none"
       data-cursor-default="false"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: index * 0.05, duration: 0.3, ease: appleEase }}
-      whileHover={{ 
-        backgroundColor: "rgba(140, 130, 121, 0.15)",
-        borderColor: "rgba(140, 130, 121, 0.4)",
-        color: "#F2F2F2",
+      whileHover={{
+        backgroundColor: "rgba(140, 130, 121, 0.08)",
+        borderColor: "rgba(255, 255, 255, 0.1)",
+        color: "rgba(242, 242, 242, 0.7)",
         y: -1,
       }}
       whileTap={{ scale: 0.95 }}
@@ -274,15 +97,15 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         bg-deep-black rounded-lg overflow-hidden
         ${spanClasses[project.span]}
       `}
-      onClick={onExpand}  
+      onClick={onExpand}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       layoutId={`project-${project.id}`}
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ 
-        duration: 0.8, 
+      transition={{
+        duration: 0.8,
         delay: index * 0.1,
         ease: appleEase,
         layout: layoutTransition,
@@ -303,7 +126,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
       </div>
 
       {/* Content Area */}
-      <motion.div 
+      <motion.div
         className={`relative flex-1 overflow-hidden ${project.span === "tall" ? "min-h-[400px]" : "min-h-[200px] md:min-h-[220px]"}`}
         animate={{ opacity: isAnyExpanded ? 0 : 1 }}
         transition={{ duration: 0.15 }}
@@ -311,7 +134,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         {/* Project Image/GIF with Zoom Effect */}
         <motion.div
           className="absolute inset-0"
-          animate={{ scale: isHovered ? 1.2 : 1 } }
+          animate={{ scale: isHovered ? 1.2 : 1 }}
           transition={{ duration: 0.6, ease: appleEase }}
         >
           <img
@@ -323,7 +146,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
             }}
           />
           {/* Fallback gradient */}
-          <div 
+          <div
             className="absolute inset-0 -z-10"
             style={{
               background: `
@@ -341,7 +164,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         {/* Tags */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
           {project.tags.slice(0, 2).map((tag) => (
-            <span 
+            <span
               key={tag}
               className="px-3 py-1.5 text-[9px] font-mono tracking-wider bg-deep-black/20 backdrop-blur-sm rounded border border-white/10 uppercase"
             >
@@ -362,7 +185,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
             {project.description}
           </p>
           <div className="flex items-center justify-between">
-            <motion.span 
+            <motion.span
               className="text-[12px] font-mono tracking-wider text-turbonite-highlight/70 uppercase"
               animate={{ opacity: isHovered ? 1 : 0 }}
               transition={{ duration: 0.2 }}
@@ -376,7 +199,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
         </div>
 
         {/* Hover highlight */}
-        <motion.div 
+        <motion.div
           className="absolute inset-0 bg-gradient-to-t from-turbonite-highlight/10 via-transparent to-transparent pointer-events-none"
           animate={{ opacity: isHovered ? 1 : 0 }}
           transition={{ duration: 0.3 }}
@@ -398,12 +221,12 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    
+
     document.addEventListener("keydown", handleEscape);
     document.body.style.overflow = "hidden";
-    
+
     const timer = setTimeout(() => setContentVisible(true), 150);
-    
+
     return () => {
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "";
@@ -437,7 +260,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         {/* Title Bar - matches Resume modal styling */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02] shrink-0">
           <div className="flex items-center gap-4">
-            <TrafficLights onClick={handleClose} interactive />
+            <TrafficLights onClick={handleClose} />
             <span className="text-xs font-mono tracking-wider text-turbonite-base/70 uppercase">
               {project.title}
             </span>
@@ -446,7 +269,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         </div>
 
         {/* Expanded content */}
-        <motion.div 
+        <motion.div
           className="flex-1 overflow-y-auto overflow-x-hidden min-h-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: contentVisible ? 1 : 0 }}
@@ -463,9 +286,9 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              
+
               {/* Fallback gradient */}
-              <div 
+              <div
                 className="absolute inset-0 -z-10"
                 style={{
                   background: `
@@ -475,11 +298,11 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                   `,
                 }}
               />
-              
+
               <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-transparent to-deep-black/20 pointer-events-none" />
-              
+
               {/* Grid pattern overlay */}
-              <div 
+              <div
                 className="absolute inset-0 opacity-[0.015] cursor-pointer "
                 style={{
                   backgroundImage: `
@@ -571,10 +394,10 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
                     {project.galleryImages.map((mediaUrl, idx) => {
                       // Check if it's a video file
                       const isVideo = /\.(mp4|webm|mov|m4v)$/i.test(mediaUrl);
-                      
+
                       return (
-                        <div 
-                          key={idx} 
+                        <div
+                          key={idx}
                           className="relative aspect-video rounded-lg overflow-hidden border border-white/10"
                         >
                           {isVideo ? (
@@ -613,13 +436,23 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
 }
 
 function ToolsSection() {
-  const tools = [
+  const row1 = [
     "SolidWorks", "ANSYS", "MATLAB", "Python", "AutoCAD", "Fusion 360",
-    "UAV", "Betaflight", "Arduino", "Raspberry Pi", "3D Printing", "CNC"
+    "Creo", "GD&T", "CFD", "NASTRAN",
+  ];
+  const row2 = [
+    "Arduino", "Raspberry Pi", "3D Printing", "Soldering", "CNC",
+    "UAV", "Betaflight", "C++", "OpenRocket", "Multimeters",
   ];
 
+  const SkillChip = ({ label }: { label: string }) => (
+    <span className="shrink-0 px-3 py-1.5 text-[10px] font-mono tracking-wider text-turbonite-base/70 bg-white/[0.02] border border-white/5 rounded-md whitespace-nowrap select-none uppercase">
+      {label}
+    </span>
+  );
+
   return (
-    <motion.div 
+    <motion.div
       className="mt-16 sm:mt-24"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
@@ -627,22 +460,24 @@ function ToolsSection() {
       transition={{ duration: 0.8 }}
     >
       <p className="text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-highlight uppercase mb-6 sm:mb-8 text-center sm:text-left">
-        Skills & Tools
+        Skills {"&"} Tools
       </p>
-      <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
-        {tools.map((tool, index) => (
-          <motion.span
-            key={tool}
-            className="px-4 py-2 text-xs font-mono tracking-wider text-turbonite-base/70 bg-white/[0.02] border border-white/5 rounded-lg hover:border-turbonite-highlight/30 hover:text-engineering-white transition-all duration-200 cursor-pointer"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0, duration: 0, ease: appleEase }}
-            whileHover={{ y: -2 }}
-          >
-            {tool}
-          </motion.span>
-        ))}
+
+      {/* Marquee container with fade edges */}
+      <div className="relative overflow-hidden" style={{ maskImage: "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)", WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)" }}>
+        {/* Row 1 — scrolls left */}
+        <div className="flex gap-3 mb-3 animate-marquee-left" style={{ width: "max-content" }}>
+          {[...row1, ...row1].map((tool, i) => (
+            <SkillChip key={`r1-${i}`} label={tool} />
+          ))}
+        </div>
+
+        {/* Row 2 — scrolls right */}
+        <div className="flex gap-3 animate-marquee-right" style={{ width: "max-content" }}>
+          {[...row2, ...row2].map((tool, i) => (
+            <SkillChip key={`r2-${i}`} label={tool} />
+          ))}
+        </div>
       </div>
     </motion.div>
   );
@@ -651,7 +486,7 @@ function ToolsSection() {
 export default function EngineeringHub() {
   const [expandedProject, setExpandedProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
@@ -666,7 +501,7 @@ export default function EngineeringHub() {
     } else {
       document.body.removeAttribute("data-modal-open");
     }
-    
+
     return () => {
       document.body.removeAttribute("data-modal-open");
     };
@@ -682,9 +517,9 @@ export default function EngineeringHub() {
 
   return (
     <>
-      <section 
+      <section
         ref={sectionRef}
-        id="works" 
+        id="works"
         className="relative min-h-screen py-20 sm:py-32 md:py-48"
       >
         {/* SVG Grid Background */}
@@ -692,10 +527,10 @@ export default function EngineeringHub() {
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="works-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-                <path 
-                  d="M 60 0 L 0 0 0 60" 
-                  fill="none" 
-                  stroke="rgba(242, 242, 242, 0.02)" 
+                <path
+                  d="M 60 0 L 0 0 0 60"
+                  fill="none"
+                  stroke="rgba(242, 242, 242, 0.02)"
                   strokeWidth="1"
                 />
               </pattern>
@@ -706,7 +541,7 @@ export default function EngineeringHub() {
 
         <div className="relative container mx-auto px-4 sm:px-6 md:px-12 max-w-6xl">
           {/* Section header */}
-          <motion.div 
+          <motion.div
             className="mb-12 sm:mb-24 md:mb-32 text-center sm:text-left"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -745,10 +580,10 @@ export default function EngineeringHub() {
 
       <AnimatePresence>
         {expandedProject && (
-          <ExpandedCard 
+          <ExpandedCard
             key={expandedProject.id}
-            project={expandedProject} 
-            onClose={handleClose} 
+            project={expandedProject}
+            onClose={handleClose}
           />
         )}
       </AnimatePresence>
