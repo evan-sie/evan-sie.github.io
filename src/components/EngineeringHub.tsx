@@ -487,12 +487,12 @@ export default function EngineeringHub() {
   const [expandedProject, setExpandedProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+  // const { scrollYProgress } = useScroll({
+  //   target: sectionRef,
+  //   offset: ["start end", "end start"]
+  // });
 
-  const headerY = useTransform(scrollYProgress, [0, 0.4], [40, 0]);
+  // const headerY = useTransform(scrollYProgress, [0, 0.4], [40, 0]);
 
   // Notify FloatingDock when modal is open/closed
   useEffect(() => {
@@ -547,7 +547,6 @@ export default function EngineeringHub() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, ease: appleEase }}
-            style={{ y: headerY }}
           >
             <p className="text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-highlight uppercase mb-6 sm:mb-8">
               03 — Personal Projects

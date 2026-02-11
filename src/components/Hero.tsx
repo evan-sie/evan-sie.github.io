@@ -102,7 +102,7 @@ export default function Hero() {
   }, []);
 
   const { scrollY } = useScroll();
-  const titleY = useTransform(scrollY, [0, 800], [0, 200]);
+  // const titleY = useTransform(scrollY, [0, 800], [0, 200]);
   const titleOpacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   const containerVariants = {
@@ -180,7 +180,7 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
           style={{
-            y: titleY,
+            // y: titleY,
             opacity: titleOpacity,
           }}
         >

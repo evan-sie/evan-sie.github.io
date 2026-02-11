@@ -155,15 +155,15 @@ export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+  // const { scrollYProgress } = useScroll({
+  //   target: sectionRef,
+  //   offset: ["start end", "end start"]
+  // });
 
-  // Parallax for various elements
-  const headerY = useTransform(scrollYProgress, [0, 0.4], [30, 0]);
-  const photoY = useTransform(scrollYProgress, [0, 1], [40, -30]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [25, -15]);
+  // // Parallax for various elements
+  // const headerY = useTransform(scrollYProgress, [0, 0.4], [30, 0]);
+  // const photoY = useTransform(scrollYProgress, [0, 1], [40, -30]);
+  // const contentY = useTransform(scrollYProgress, [0, 1], [25, -15]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -203,7 +203,7 @@ export default function About() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 1.4, ease: appleEase }}
-              style={{ y: photoY }}
+            // style={{ y: photoY }}
             >
               {/* Photo container - FORCED to 280px max width */}
               <div className="relative w-full max-w-[280px]">
@@ -256,13 +256,13 @@ export default function About() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              style={{ y: contentY }}
+            // style={{ y: contentY }}
             >
               {/* Section label */}
               <motion.p
                 className="text-[10px] sm:text-xs font-mono tracking-[0.2em] sm:tracking-[0.3em] text-turbonite-highlight uppercase mb-6 sm:mb-8 text-center lg:text-left"
                 variants={itemVariants}
-                style={{ y: headerY }}
+              // style={{ y: headerY }}
               >
                 01 — About
               </motion.p>
