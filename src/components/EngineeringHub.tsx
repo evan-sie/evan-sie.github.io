@@ -117,7 +117,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
       }}
     >
       {/* Title Bar */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02] backdrop-blur-md">
         <TrafficLights />
         <span className="text-xs tracking-wider text-engineering-white/70 uppercase font-medium">
           {project.title}
@@ -258,7 +258,7 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
         transition={layoutTransition}
       >
         {/* Title Bar - matches Resume modal styling */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02] shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02] backdrop-blur-md shrink-0">
           <div className="flex items-center gap-4">
             <TrafficLights onClick={handleClose} />
             <span className="text-xs font-mono tracking-wider text-turbonite-base/70 uppercase">
