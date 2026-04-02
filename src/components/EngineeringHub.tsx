@@ -25,6 +25,52 @@ const layoutTransition = {
 };
 
 const projects: Project[] = [
+
+  {
+    id: "Aero.html",
+    title: "Autonomous Vertical Takeoff/Landing Aerial Reconnaissance Aircraft",
+    date: "2026.02",
+    span: "wide",
+    description: "An autonomous wing-folding quad rotor aircraft designed for waypoint reconnaissance or payload delivery",
+    tags: ["INAV", "CAD", "3D Printing"],
+    image: "",
+    gifUrl: undefined,
+    galleryImages: undefined,
+    content: `
+**Key Achievements:**
+  - Fabricated & assembled a 1.6m wingspan, 3D-printed folding-wing QuadPlane using a Bambu Lab A1 using 5
+    filament types (LW-PLA, CF-PLA, PETG, TPU, PLA) based on structural, flexibility, and weight requirements.
+  - Designed airframe components in Fusion 360 including a camera tilt nose cone, V-tail rear-camera mount, and
+    shuttle anti-rotation keyway to eliminate boom rotation during wing-fold transitions.
+  - Integrated full avionics stack including a Matek H743 flight controller, BN-880 GPS, 900 MHz ELRS radio link, and
+    long-range 1.2 GHz analog FPV system, wiring and configuring all UART/serial protocols on the flight controller.
+  - Configured ArduPilot QuadPlane firmware to perform autonomous VTOL transitions between quad-rotor hover
+    and fixed-wing cruise using differential thrust with a V-tail control surface mixing scheme.
+  - Tuned PID controllers across both flight modes for control using a handheld ELRS radio transmitter, and validate
+    autonomous waypoint navigation and return-to-home mission profiles.
+`
+  },
+
+  {
+    id: "RADA Lab.html",
+    title: "Reliability and Design Automation Laboratory",
+    date: "2025.06",
+    span: "tall",
+    description: "Worked alongside UTD Professor Xinchen Ni",
+    tags: ["Python", "MATLAB", "Bayesian Optimization"],
+    image: "",
+    gifUrl: undefined,
+    galleryImages: undefined,
+    content: `
+**Key Achievements:**
+  -Developed MATLAB code to simultaneously train 3 machine learning models on manufacturing datasets,
+  implementing Bayesian learning techniques to iteratively optimize model accuracy
+  -Generated 3D visualizations to identify trends across multiple parameters, presenting analytical findings to the
+  additive manufacturing team
+`
+  },
+
+
   {
     id: "HAB.html",
     title: "High Altitude Balloon",
@@ -41,11 +87,13 @@ const projects: Project[] = [
     https://youtu.be/2wPQeWOTOIY?si=9Q7SsurK7C8yXTe6
 
 **Key Achievements:**
-- Tested electronic components to -65C
-- Designed custom mounting brackets for top, horizontal, and bottom facing cameras
-- Calculated requireed helium needed for the balloon to reach desired altitude
-- Sourced components and sensors for the payload
-- Published a technical research paper
+  - Coordinated a team of 5 engineers to design, build, and launch 3 weather balloons all reaching 91,000ft+ to
+    collect data on cosmic radiation, ozone, temperature, pressure and humidity.
+  - Prioritized and divide work among participants to meet project and flight deadlines
+  - Utilized CAD to design and manufacture prototype parts to protect sensitive components against -65˚C conditions
+  - Perform simulations and real world testing to confirm payload functionality during maiden flight
+  - Ensured utmost reliability and redundancy with scientific instruments and data collection software
+  - Published 2 research papers and presented at Rice University, Houston TX for the AIAA Regional Conference twice
 `
   },
 ];
@@ -442,7 +490,7 @@ function ToolsSection() {
   ];
   const row2 = [
     "Arduino", "Raspberry Pi", "3D Printing", "Soldering", "CNC",
-    "UAV", "Betaflight", "C++", "OpenRocket", "Multimeters",
+    "UAV", "Betaflight", "C++", "OpenRocket", "Multimeter",
   ];
 
   const SkillChip = ({ label }: { label: string }) => (
