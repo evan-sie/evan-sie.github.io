@@ -28,12 +28,12 @@ const projects: Project[] = [
 
   {
     id: "Aero.html",
-    title: "Autonomous Vertical Takeoff/Landing Aerial Reconnaissance Aircraft",
+    title: "Autonomous VTOL Aerial Reconnaissance Aircraft",
     date: "2026.02",
-    span: "wide",
+    span: "default",
     description: "An autonomous wing-folding quad rotor aircraft designed for waypoint reconnaissance or payload delivery",
     tags: ["INAV", "CAD", "3D Printing"],
-    image: "",
+    image: "/projects/aero.png",
     gifUrl: undefined,
     galleryImages: undefined,
     content: `
@@ -51,24 +51,6 @@ const projects: Project[] = [
 `
   },
 
-  {
-    id: "RADA Lab.html",
-    title: "Reliability and Design Automation Laboratory",
-    date: "2025.06",
-    span: "tall",
-    description: "Worked alongside UTD Professor Xinchen Ni",
-    tags: ["Python", "MATLAB", "Bayesian Optimization"],
-    image: "",
-    gifUrl: undefined,
-    galleryImages: undefined,
-    content: `
-**Key Achievements:**
-  -Developed MATLAB code to simultaneously train 3 machine learning models on manufacturing datasets,
-  implementing Bayesian learning techniques to iteratively optimize model accuracy
-  -Generated 3D visualizations to identify trends across multiple parameters, presenting analytical findings to the
-  additive manufacturing team
-`
-  },
 
 
   {
@@ -78,7 +60,7 @@ const projects: Project[] = [
     span: "tall",
     description: "A high altitude weather balloon payload to measure temperature, pressure, and humidity",
     tags: ["Arduino", "CAD", "3D Printing"],
-    image: "/projects/horizon.jpg",
+    image: "/projects/runcam.png",
     gifUrl: undefined,
     galleryImages: ["/projects/launch.mp4", "/projects/burst.mp4"],
     content: `This project was part of my involvment in AIAA's research division where 5 of us built and launched UTD's first high altitude weather balloon reaching 92,404ft (28,164m) in altitude.
@@ -96,6 +78,27 @@ const projects: Project[] = [
   - Published 2 research papers and presented at Rice University, Houston TX for the AIAA Regional Conference twice
 `
   },
+
+  {
+    id: "RADA Lab.html",
+    title: "Reliability and Design Automation Laboratory",
+    date: "2025.06",
+    span: "default",
+    description: "Worked alongside UTD Professor Xinchen Ni",
+    tags: ["Python", "MATLAB", "Bayesian Optimization"],
+    image: "/projects/rada.png",
+    gifUrl: undefined,
+    galleryImages: undefined,
+    content: `
+**Key Achievements:**
+  -Developed MATLAB code to simultaneously train 3 machine learning models on manufacturing datasets,
+  implementing Bayesian learning techniques to iteratively optimize model accuracy
+  -Generated 3D visualizations to identify trends across multiple parameters, presenting analytical findings to the
+  additive manufacturing team
+`
+  },
+
+
 ];
 
 function CourseChip({ tag, index }: { tag: string; index: number }) {
@@ -131,8 +134,8 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
 
   const spanClasses = {
     default: "",
-    wide: "sm:col-span-3 md:col-span-3 lg:col-span-3", width: "w-full",
-    tall: "sm:row-span-2 md:row-span-2", height: "h-full",
+    wide: "sm:col-span-3 md:col-span-3 lg:col-span-3",
+    tall: "sm:row-span-2 md:row-span-2",
   };
 
   // Use GIF for preview if available, otherwise use main image
@@ -175,7 +178,7 @@ function ProjectCard({ project, onExpand, index, isAnyExpanded }: ProjectCardPro
 
       {/* Content Area */}
       <motion.div
-        className={`relative flex-1 overflow-hidden ${project.span === "tall" ? "min-h-[400px]" : "min-h-[200px] md:min-h-[220px]"}`}
+        className={`relative flex-1 overflow-hidden ${project.span === "tall" ? "aspect-[3/4] sm:aspect-[9/16]" : "min-h-[280px] sm:min-h-[320px] md:min-h-[360px]"}`}
         animate={{ opacity: isAnyExpanded ? 0 : 1 }}
         transition={{ duration: 0.15 }}
       >
@@ -323,35 +326,24 @@ function ExpandedCard({ project, onClose }: ExpandedCardProps) {
           animate={{ opacity: contentVisible ? 1 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 h-full lg:h-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] min-h-full">
             {/* Left - Main Image */}
-            <div className="relative min-h-[300px] lg:min-h-full lg:sticky lg:top-0 border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden cursor-pointer">
+            <div className="relative flex items-center justify-center bg-[#080808] min-h-[250px] lg:sticky lg:top-0 lg:h-screen lg:max-h-[calc(100vh-10rem)] border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden">
               <img
                 src={project.image}
                 alt={project.title}
-                className="absolute inset-0 w-full h-full object-cover "
+                className="w-full h-full object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
               />
 
-              {/* Fallback gradient */}
-              <div
-                className="absolute inset-0 -z-10"
-                style={{
-                  background: `
-                    radial-gradient(ellipse at 30% 20%, rgba(78, 79, 80, 0.2) 0%, transparent 50%),
-                    radial-gradient(ellipse at 70% 80%, rgba(140, 130, 121, 0.15) 0%, transparent 50%),
-                    linear-gradient(180deg, rgba(5, 5, 5, 0.9) 0%, rgba(12, 12, 12, 1) 100%)
-                  `,
-                }}
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-transparent to-deep-black/20 pointer-events-none" />
+              {/* Subtle vignette */}
+              <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: "inset 0 0 60px rgba(5, 5, 5, 0.4)" }} />
 
               {/* Grid pattern overlay */}
               <div
-                className="absolute inset-0 opacity-[0.015] cursor-pointer "
+                className="absolute inset-0 opacity-[0.015] pointer-events-none"
                 style={{
                   backgroundImage: `
                     linear-gradient(to right, rgba(242, 242, 242, 1) 1px, transparent 1px),
@@ -609,7 +601,7 @@ export default function EngineeringHub() {
           </motion.div>
 
           {/* Bento Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6 isolate">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:auto-rows-[minmax(200px,auto)] gap-4 sm:gap-5 md:gap-6 isolate">
             {projects.map((project, index) => (
               <ProjectCard
                 key={project.id}
