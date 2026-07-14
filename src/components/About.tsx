@@ -287,11 +287,15 @@ export default function About() {
               />
 
               {/* Narrative - Using thin font with higher opacity */}
-              <motion.div variants={itemVariants} className="text-center lg:text-left">
-                <p className="text-sm sm:text-base font-thin text-engineering-white/80 leading-relaxed mb-4">
-                  Hi! I&apos;m Evan, I&apos;m a Mechanical Engineering student at University of Texas at Dallas. I started my journey in Indonesia where I moved
-                  to the US at the age of 7. Here I learned to speak English and gained a passion for aviation and engineering. Both of my parents were engineers so I was always grounded in the field.
-                  This culminated in a long time hobby of building RC aircraft and drones, the first of which I built when I was 10. Ever since then I have been doing personal projects that involve engineering and technical skills over the years.
+              <motion.div variants={itemVariants} className="text-center lg:text-left space-y-4">
+                <p className="text-sm sm:text-base font-thin text-engineering-white/80 leading-relaxed">
+                  Hi there! I&apos;m Evan Sie. I&apos;m a senior studying for a Bachelor&apos;s in Mechanical Engineering at UTD. My background is in Aerospace, but I love anything related to STEM. Over the years I discovered my niche: building and piloting model aircraft. I 3D printed a VTOL aircraft that takes off like a drone and unfolds its wings mid-flight.
+                </p>
+                <p className="text-sm sm:text-base font-thin text-engineering-white/80 leading-relaxed">
+                  I wear many different hats, but my main focus is engineering. I led a team of student engineers in launching a payload measuring ozone and radiation at 94,000ft. Before that I used a Raspberry Pi to build a smart mirror for my bedroom, a futuristic and convenient way to get my day&apos;s information.
+                </p>
+                <p className="text-sm sm:text-base font-thin text-engineering-white/80 leading-relaxed">
+                  I love to explore to world and take pictures to compose and tell a story. While my dream is to live in the Swiss Alps, I currently live in Frisco, TX, but I was born in Jakarta, Indonesia. You can reach me through LinkedIn or email to collaborate and start a project. Let&apos;s see if we can make it happen.
                 </p>
               </motion.div>
 
