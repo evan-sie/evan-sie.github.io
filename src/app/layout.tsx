@@ -1,23 +1,37 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Instrument_Serif, Inter } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { NoiseTexture } from "@/components/noise-texture";
 import "./globals.css";
 
 /*
- * All three faces are open-licensed (SIL OFL) and self-hosted by next/font at
- * build time — no font files in the repo, no requests to Google at runtime.
+ * PP Neue Montreal and PP Editorial New are commercial faces from Pangram
+ * Pangram and are NOT covered by an open licence — see the licensing note in
+ * the README before this repo or site is shared more widely. Geist Mono is
+ * SIL OFL, self-hosted at build time by next/font.
  */
 
-const sans = Inter({
-  subsets: ["latin"],
+const sans = localFont({
+  src: "../../public/fonts/neue-montreal-regular.woff",
+  weight: "400",
+  style: "normal",
   variable: "--font-sans",
   display: "block",
 });
 
-const serif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+const serif = localFont({
+  src: [
+    {
+      path: "../../public/fonts/editorial-new-regular.woff",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/editorial-new-italic.woff",
+      weight: "400",
+      style: "italic",
+    },
+  ],
   variable: "--font-serif",
   display: "block",
 });

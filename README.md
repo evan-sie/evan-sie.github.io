@@ -55,8 +55,9 @@ static export and publishes it to GitHub Pages.
 
 ## Assets and licensing
 
-Type is Inter, Instrument Serif, and Geist Mono, all under the SIL Open Font
-License and self-hosted at build time by `next/font` — no font files in this
-repo and no runtime requests to Google.
+Body and display type are **PP Neue Montreal** and **PP Editorial New**, both
+commercial faces from [Pangram Pangram](https://pangrampangram.com). They are
+**not** open-licensed and no licence has been purchased for them — resolve this
+before relying on the site publicly. Geist Mono is SIL OFL.
 
 Photography and video are Evan's own.
