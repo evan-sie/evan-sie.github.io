@@ -935,6 +935,16 @@ button {
   .intro-scale {
     transform: none !important;
   }
+
+  /*
+   * The works section is transparent on desktop so the fixed bio shows through
+   * it. Here the bio scrolls away instead, leaving nothing over the fixed video
+   * layer beneath — so the video bleeds through as soon as you scroll past the
+   * bio. Give the section its own black ground to cover it.
+   */
+  .section-portfolio-grid {
+    background-color: black;
+  }
 }
 
 @media (max-height: 600px) {
