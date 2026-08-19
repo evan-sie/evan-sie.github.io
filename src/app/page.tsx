@@ -21,12 +21,19 @@ function HomeScreen() {
 
   return (
     <>
-      <VideoBackground />
+      {/*
+        The bio blends against the video. Keeping them in one wrapper lets the
+        compact layout scroll them together — see .bio-stage in globals.css.
+      */}
+      <div className="bio-stage">
+        <VideoBackground />
+        <HomeBio />
+      </div>
+
       <Nav stacked={navStacked} />
       <Counter />
 
       <div className="hero-spacer" />
-      <HomeBio />
       <PortfolioGrid items={workItems} />
       <div className="hero-spacer" />
     </>

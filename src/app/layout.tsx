@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { NoiseTexture } from "@/components/noise-texture";
@@ -40,6 +40,18 @@ const mono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 });
+
+/*
+ * Without an explicit theme colour, iOS Safari samples the page to tint the
+ * status bar and toolbar and lands on white, which shows as white bars above
+ * and below a black page. viewport-fit=cover lets the background run under
+ * those bars rather than stopping at them.
+ */
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  colorScheme: "dark",
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Evan Sie",

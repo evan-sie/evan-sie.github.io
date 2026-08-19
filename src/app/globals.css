@@ -63,10 +63,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-body {
-  will-change: opacity;
-}
-
 a {
   color: inherit;
 }
@@ -944,6 +940,30 @@ button {
    */
   .section-portfolio-grid {
     background-color: black;
+  }
+
+  /*
+   * iOS Safari will not re-run a blend against a position:fixed backdrop during
+   * compositor-driven scrolling — the bio simply stops painting until the
+   * scroll settles. Anchoring the video to the bio's own box puts both sides of
+   * the blend in the same scrolling context, so there is nothing to re-blend.
+   */
+  .bio-stage {
+    position: relative;
+  }
+
+  .fixed-video-layer {
+    position: absolute;
+  }
+
+  /* Tapping "take pictures" still takes the video fullscreen. */
+  .fixed-video-layer[data-state="open"] {
+    position: fixed;
+  }
+
+  /* Promoting this layer is what makes the blend unstable in the first place. */
+  .home-multiply {
+    will-change: auto;
   }
 }
 
