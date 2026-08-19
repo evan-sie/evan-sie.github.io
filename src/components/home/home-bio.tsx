@@ -37,7 +37,7 @@ export function HomeBio() {
           </span>
 
           <span className="home-text" style={{ "--delay": 1 } as React.CSSProperties}>
-            <span style={{ whiteSpace: "nowrap" }}>
+            <span className="keep-together">
               My background is in <RevealTrigger id={4}>Aerospace</RevealTrigger>
             </span>
             <RevealContent id={4}>
@@ -80,7 +80,7 @@ export function HomeBio() {
           </span>
 
           <span className="home-text" style={{ "--delay": 2 } as React.CSSProperties}>
-            <span style={{ whiteSpace: "nowrap" }}>
+            <span className="keep-together">
               You can reach me through{" "}
               <RevealTrigger id={12}>LinkedIn</RevealTrigger>
             </span>

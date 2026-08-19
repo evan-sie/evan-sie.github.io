@@ -45,7 +45,7 @@
 html,
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: clip;
   background-color: black;
   color: var(--mauve-12);
@@ -92,7 +92,7 @@ button {
   inset: 0;
   z-index: 9999;
   width: 100vw;
-  min-height: 100vh;
+  min-height: 100dvh;
   opacity: 0.2;
   pointer-events: none;
   transform: translateY(0);
@@ -894,5 +894,117 @@ button {
   to {
     transform: scale(1);
     filter: blur(0.25px);
+  }
+}
+
+/* ---------- Small screens ---------- */
+
+/* Above phones the two phrases stay on one line; below, breaking them beats
+   overflowing the viewport. */
+.keep-together {
+  white-space: nowrap;
+}
+
+/*
+ * LAYOUT — the fixed, vertically-centred bio only works while it fits the
+ * viewport. On a phone it runs past 1300px and gets clipped at both ends with
+ * no way to scroll to it; a landscape phone is wide but far too short for the
+ * same reason. In both cases the bio rejoins the document flow and the page
+ * simply scrolls through it into the works grid.
+ *
+ * Keyed on height as well as width so landscape phones are covered. Kept in
+ * sync with isCompact() in use-scroll-effects.ts.
+ */
+@media (max-width: 767px), (max-height: 600px) {
+  /* The spacers exist to give the fixed hero scroll room; in flow it has its own. */
+  .hero-spacer {
+    display: none;
+  }
+
+  .home-multiply {
+    position: relative;
+    inset: auto;
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible;
+    padding: calc(var(--header-gradient-height) + 24px) 0 15vh;
+  }
+
+  /* useScrollEffects skips the intro scale here, but neutralise any inline
+     transform left over from resizing across the breakpoint. */
+  .intro-scale {
+    transform: none !important;
+  }
+}
+
+@media (max-height: 600px) {
+  .home-multiply {
+    padding-top: calc(var(--header-gradient-height) + 8px);
+  }
+}
+
+/*
+ * TYPE AND SPACING — width-only, since these are about a narrow column rather
+ * than a short one. Desktop sizes are set for a 624px content column.
+ */
+@media (max-width: 767px) {
+  .keep-together {
+    white-space: normal;
+  }
+
+  /* 28px wraps every other word on a phone and stretches the bio past 1300px. */
+  .home-text {
+    font-size: 21px;
+    line-height: 28px;
+    letter-spacing: -0.005em;
+  }
+
+  /* The 1.2 entrance scale hangs ~20% off both edges of a narrow viewport. */
+  .portfolio-grid-item {
+    transform: scale(1.04);
+  }
+
+  .portfolio-grid-collection-wrapper {
+    padding-top: 4em;
+  }
+
+  .page {
+    padding-top: calc(var(--header-gradient-height) + 8px);
+    padding-bottom: 15vh;
+  }
+
+  .page-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .page-title {
+    font-size: 28px;
+  }
+
+  .page-intro {
+    font-size: 19px;
+    margin-bottom: 32px;
+  }
+
+  .page-subhead {
+    font-size: 20px;
+    margin: 36px 0 16px;
+  }
+
+  .page-body {
+    font-size: 17px;
+  }
+
+  .achievement-list {
+    gap: 16px;
+  }
+
+  .page-hero {
+    margin-bottom: 32px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
   }
 }

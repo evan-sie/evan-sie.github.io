@@ -21,6 +21,15 @@ function ramp(progress: number, from: number, to: number) {
   return 1 - (1 - t) * (1 - t);
 }
 
+/*
+ * On narrow or short viewports the bio sits in normal flow instead of a fixed
+ * centred layer, so the intro scale and the scroll wrap have nothing to act on.
+ * Must stay in sync with the layout media query in globals.css.
+ */
+function isCompact() {
+  return window.matchMedia("(max-width: 767px), (max-height: 600px)").matches;
+}
+
 function scrollMax() {
   const se = document.scrollingElement || document.documentElement;
   return Math.max(
@@ -51,11 +60,13 @@ export function useScrollEffects() {
     const update = () => {
       const vh = window.innerHeight;
 
+      const compact = isCompact();
+
       // Bio text eases 1 → 0.85 across the first 10% of the works run, and back
       // out again over the last 10%.
       const collection = document.querySelector(".portfolio-grid-collection-wrapper");
       const intro = document.querySelector<HTMLElement>(".intro-scale");
-      if (collection && intro) {
+      if (collection && intro && !compact) {
         const rect = collection.getBoundingClientRect();
         const total = rect.height + vh;
         const progress = Math.min(1, Math.max(0, (vh - rect.top) / total));
@@ -74,7 +85,10 @@ export function useScrollEffects() {
         const total = rect.height + vh;
         const progress = Math.min(1, Math.max(0, (vh - rect.top) / total));
 
-        const scale = 1.2 - ramp(progress, 0.15, 0.3) * 0.2;
+        // Narrow viewports enter from 1.04 rather than 1.2; a 20% overscale
+        // hangs off both edges of a phone screen.
+        const from = compact ? 1.04 : 1.2;
+        const scale = from - ramp(progress, 0.15, 0.3) * (from - 1);
         item.style.transform = `scale3d(${scale}, ${scale}, 1)`;
       });
 
@@ -83,7 +97,7 @@ export function useScrollEffects() {
       // Past the tail spacer the view matches the top, so wrap around rather
       // than dead-ending.
       const max = scrollMax();
-      if (max > 0 && y >= max - 2) {
+      if (!compact && max > 0 && y >= max - 2) {
         document.body.scrollTop = 0;
         const se = document.scrollingElement || document.documentElement;
         se.scrollTop = 0;
@@ -103,7 +117,7 @@ export function useScrollEffects() {
     // Wheeling up at the very top jumps to the tail, so momentum carries back
     // up through the tiles — the other half of the loop.
     const onWheel = (e: WheelEvent) => {
-      if (e.deltaY < 0 && scrollTop() <= 1) {
+      if (e.deltaY < 0 && scrollTop() <= 1 && !isCompact()) {
         const max = scrollMax();
         if (max > 8) {
           window.scrollTo(0, max - 8);
